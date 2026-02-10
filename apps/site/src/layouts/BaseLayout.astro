@@ -1,0 +1,37 @@
+---
+const { title = "Forrest Morrisey", description = "" } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{title}</title>
+    {description ? <meta name="description" content={description} /> : null}
+    <link rel="stylesheet" href="/styles/global.css" />
+  </head>
+  <body>
+    <header class="container">
+      <nav class="nav">
+        <a href="/"><strong>Forrest Morrisey</strong></a>
+        <div>
+          <a href="/portfolio">Portfolio</a>
+          <a href="/writing">Writing</a>
+          <a href="/adventures">Adventures</a>
+          <a href="/photography">Photography</a>
+          <a href="/resume">Resume</a>
+          <a href="/about">About</a>
+          <a href="/contact">Contact</a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container">
+      <slot />
+    </main>
+
+    <footer class="container muted" style="padding-bottom: 40px;">
+      © {new Date().getFullYear()} Forrest Morrisey
+    </footer>
+  </body>
+</html>
