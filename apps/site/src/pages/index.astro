@@ -1,0 +1,121 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import HeroBanner from "../components/HeroBanner.astro";
+import SectionTitle from "../components/SectionTitle.astro";
+import CardGrid from "../components/CardGrid.astro";
+import ImageTile from "../components/ImageTile.astro";
+import { getCollection } from "astro:content";
+
+// Get featured items from each collection
+const adventures = await getCollection("adventures", ({ data }) => data.published && data.featured);
+const photography = await getCollection("photography", ({ data }) => data.published && data.featured);
+const portfolio = await getCollection("portfolio", ({ data }) => data.published && data.featured);
+const writing = await getCollection("writing", ({ data }) => data.published && data.featured);
+const music = await getCollection("music", ({ data }) => data.published && data.featured);
+const youtube = await getCollection("youtube", ({ data }) => data.published && data.featured);
+
+// Combine all featured items, sorted by date
+const featuredItems = [
+  ...adventures.map(a => ({ ...a, collection: "adventures" })),
+  ...photography.map(p => ({ ...p, collection: "photography" })),
+  ...portfolio.map(p => ({ ...p, collection: "portfolio" })),
+  ...writing.map(w => ({ ...w, collection: "writing" })),
+  ...music.map(m => ({ ...m, collection: "music" })),
+  ...youtube.map(y => ({ ...y, collection: "youtube" }))
+].sort((a, b) => b.data.date.getTime() - a.data.date.getTime()).slice(0, 3);
+---
+
+<BaseLayout title="Forrest Morrisey — Innovating in Tech and Design" fullWidth={true}>
+  <!-- Hero Section -->
+  <HeroBanner 
+    title="Builder. Designer. Storyteller."
+    subtitle="Crafting digital experiences with intention"
+    height="large"
+  />
+
+  <!-- Section Tiles -->
+  <section class="section">
+    <div class="container-wide">
+      <SectionTitle title="Explore" subtitle="What I create and where I wander" />
+      
+      <CardGrid columns={3}>
+        <ImageTile 
+          href="/portfolio"
+          title="Portfolio"
+          subtitle="Projects & Work"
+          ctaLabel="View"
+          aspectRatio="square"
+        />
+        <ImageTile 
+          href="/adventures"
+          title="Adventures"
+          subtitle="Trails & Tales"
+          ctaLabel="Explore"
+          aspectRatio="square"
+        />
+        <ImageTile 
+          href="/photography"
+          title="Photography"
+          subtitle="Visual Stories"
+          ctaLabel="Browse"
+          aspectRatio="square"
+        />
+        <ImageTile 
+          href="/music"
+          title="Music"
+          subtitle="Sounds & Productions"
+          ctaLabel="Listen"
+          aspectRatio="square"
+        />
+        <ImageTile 
+          href="/youtube"
+          title="YouTube"
+          subtitle="Forrest Builds More"
+          ctaLabel="Watch"
+          aspectRatio="square"
+        />
+        <ImageTile 
+          href="/writing"
+          title="Writing"
+          subtitle="Thoughts & Essays"
+          ctaLabel="Read"
+          aspectRatio="square"
+        />
+      </CardGrid>
+    </div>
+  </section>
+
+  <!-- Featured Items -->
+  {featuredItems.length > 0 && (
+    <section class="section">
+      <div class="container-wide">
+        <SectionTitle title="Featured" subtitle="Recent highlights" />
+        
+        <CardGrid columns={3}>
+          {featuredItems.map(item => (
+            <ImageTile 
+              href={`/${item.collection}/${item.slug}`}
+              image={item.data.coverImage}
+              title={item.data.title}
+              subtitle={item.data.summary || item.data.description}
+              ctaLabel={item.data.ctaLabel}
+              aspectRatio="landscape"
+            />
+          ))}
+        </CardGrid>
+      </div>
+    </section>
+  )}
+
+  <!-- About Preview -->
+  <section class="section">
+    <div class="container text-center">
+      <h2 class="text-uppercase">About Me</h2>
+      <p class="muted" style="max-width: 600px; margin: 0 auto var(--space-md);">
+        Front-end developer and designer passionate about creating meaningful digital experiences.
+        When I'm not coding, you'll find me on a trail somewhere.
+      </p>
+      <a href="/about" class="btn btn-outline btn-pill">Learn More</a>
+    </div>
+  </section>
+</BaseLayout>

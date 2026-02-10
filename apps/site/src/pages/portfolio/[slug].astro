@@ -1,0 +1,70 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import HeroBanner from "../../components/HeroBanner.astro";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const projects = await getCollection("portfolio", ({ data }) => data.published);
+  return projects.map(project => ({
+    params: { slug: project.slug },
+    props: { project }
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const { title, heroImage, heroSubtitle, description, role, tech, links } = project.data;
+---
+
+<BaseLayout title={`${title} — Forrest Morrisey`} fullWidth={true}>
+  <HeroBanner 
+    image={heroImage}
+    title={title}
+    subtitle={heroSubtitle || role}
+    height="large"
+  />
+
+  <article class="section">
+    <div class="container">
+      {/* Project Meta */}
+      <div class="card mb-lg">
+        <div style="display: flex; flex-wrap: wrap; gap: var(--space-lg); justify-content: space-between;">
+          {role && (
+            <div>
+              <h3 class="text-uppercase muted" style="font-size: 0.75rem; margin-bottom: 4px;">Role</h3>
+              <p style="margin: 0;">{role}</p>
+            </div>
+          )}
+          
+          {tech.length > 0 && (
+            <div>
+              <h3 class="text-uppercase muted" style="font-size: 0.75rem; margin-bottom: 8px;">Tech Stack</h3>
+              <ul class="badge-list">
+                {tech.map(t => <li class="badge">{t}</li>)}
+              </ul>
+            </div>
+          )}
+          
+          {(links.repo || links.live) && (
+            <div>
+              <h3 class="text-uppercase muted" style="font-size: 0.75rem; margin-bottom: 8px;">Links</h3>
+              <div style="display: flex; gap: var(--space-sm);">
+                {links.live && <a href={links.live} target="_blank" rel="noopener noreferrer" class="btn btn-primary">View Live</a>}
+                {links.repo && <a href={links.repo} target="_blank" rel="noopener noreferrer" class="btn btn-outline">GitHub</a>}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Project Content */}
+      <div class="prose">
+        <Content />
+      </div>
+    </div>
+  </article>
+
+  <nav class="section text-center">
+    <a href="/portfolio" class="btn btn-outline btn-pill">← Back to Portfolio</a>
+  </nav>
+</BaseLayout>

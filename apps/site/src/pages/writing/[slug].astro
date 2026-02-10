@@ -1,0 +1,62 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import HeroBanner from "../../components/HeroBanner.astro";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("writing", ({ data }) => data.published);
+  return posts.map(post => ({
+    params: { slug: post.slug },
+    props: { post }
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const { title, heroImage, heroSubtitle, description, date, tags } = post.data;
+
+const formattedDate = date.toLocaleDateString('en-US', { 
+  month: 'long', 
+  day: 'numeric',
+  year: 'numeric' 
+});
+---
+
+<BaseLayout title={`${title} — Forrest Morrisey`} fullWidth={true}>
+  <HeroBanner 
+    image={heroImage}
+    title={title}
+    subtitle={heroSubtitle || formattedDate}
+    height="medium"
+  />
+
+  <article class="section">
+    <div class="container">
+      {/* Article Meta */}
+      <div class="article-meta text-center mb-lg">
+        <time class="muted">{formattedDate}</time>
+        {tags.length > 0 && (
+          <ul class="badge-list" style="justify-content: center; margin-top: var(--space-sm);">
+            {tags.map(tag => <li class="badge">{tag}</li>)}
+          </ul>
+        )}
+      </div>
+
+      {/* Article Content */}
+      <div class="prose">
+        <Content />
+      </div>
+    </div>
+  </article>
+
+  <nav class="section text-center">
+    <a href="/writing" class="btn btn-outline btn-pill">← Back to Writing</a>
+  </nav>
+</BaseLayout>
+
+<style>
+  .article-meta {
+    padding-bottom: var(--space-md);
+    border-bottom: 1px solid var(--border);
+  }
+</style>

@@ -1,0 +1,50 @@
+---
+interface Props {
+  title: string;
+  subtitle?: string;
+  centered?: boolean;
+}
+
+const { title, subtitle, centered = true } = Astro.props;
+---
+
+<div class:list={["section-title", { centered }]}>
+  <h2 class="title">{title}</h2>
+  {subtitle && <p class="subtitle">{subtitle}</p>}
+  <div class="accent-line"></div>
+</div>
+
+<style>
+  .section-title {
+    margin-bottom: 40px;
+  }
+
+  .section-title.centered {
+    text-align: center;
+  }
+
+  .title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--fg);
+    margin: 0 0 8px;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin: 0 0 16px;
+  }
+
+  .accent-line {
+    width: 60px;
+    height: 2px;
+    background: var(--accent);
+  }
+
+  .centered .accent-line {
+    margin: 0 auto;
+  }
+</style>

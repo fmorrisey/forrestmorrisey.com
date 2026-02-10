@@ -1,0 +1,55 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import HeroBanner from "../../components/HeroBanner.astro";
+import CardGrid from "../../components/CardGrid.astro";
+import ImageTile from "../../components/ImageTile.astro";
+import { getCollection } from "astro:content";
+
+const musicItems = await getCollection("music", ({ data }) => data.published);
+const sortedMusic = musicItems.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<BaseLayout title="Music — Forrest Morrisey" fullWidth={true}>
+  <HeroBanner 
+    title="Music"
+    subtitle="Sounds & Productions"
+    height="medium"
+  />
+
+  <section class="section">
+    <div class="container-wide">
+      {sortedMusic.length > 0 ? (
+        <CardGrid columns={3}>
+          {sortedMusic.map(item => (
+            <ImageTile 
+              href={`/music/${item.slug}`}
+              image={item.data.coverImage}
+              title={item.data.title}
+              subtitle={item.data.summary || item.data.description}
+              ctaLabel={item.data.ctaLabel || "Listen"}
+              aspectRatio="square"
+            />
+          ))}
+        </CardGrid>
+      ) : (
+        <div class="text-center">
+          <p class="muted">Music coming soon...</p>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <section class="section text-center">
+    <div class="container">
+      <p class="muted mb-md">Find me on:</p>
+      <div style="display: flex; justify-content: center; gap: var(--space-sm); flex-wrap: wrap;">
+        <a href="https://soundcloud.com/forrestmorrisey" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-pill">
+          SoundCloud
+        </a>
+        <a href="https://forrestmorrisey.bandcamp.com" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-pill">
+          Bandcamp
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

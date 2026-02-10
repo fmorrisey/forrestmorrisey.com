@@ -1,0 +1,103 @@
+---
+interface Props {
+  image?: string;
+  title: string;
+  subtitle?: string;
+  height?: "small" | "medium" | "large";
+  overlay?: boolean;
+}
+
+const { 
+  image, 
+  title, 
+  subtitle, 
+  height = "medium",
+  overlay = true 
+} = Astro.props;
+
+const heightClasses = {
+  small: "hero-small",
+  medium: "hero-medium",
+  large: "hero-large"
+};
+---
+
+<section 
+  class:list={["hero-banner", heightClasses[height], { "has-image": !!image }]}
+  style={image ? `background-image: url(${image})` : undefined}
+>
+  {overlay && <div class="hero-overlay"></div>}
+  <div class="hero-content">
+    <h1 class="hero-title">{title}</h1>
+    {subtitle && <p class="hero-subtitle">{subtitle}</p>}
+  </div>
+</section>
+
+<style>
+  .hero-banner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background-color: var(--card);
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+  }
+
+  .hero-small {
+    min-height: 200px;
+  }
+
+  .hero-medium {
+    min-height: 350px;
+  }
+
+  .hero-large {
+    min-height: 500px;
+  }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(11, 13, 16, 0.4) 0%,
+      rgba(11, 13, 16, 0.7) 100%
+    );
+  }
+
+  .has-image .hero-overlay {
+    background: linear-gradient(
+      to bottom,
+      rgba(11, 13, 16, 0.3) 0%,
+      rgba(11, 13, 16, 0.8) 100%
+    );
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    padding: 48px 24px;
+    max-width: 800px;
+  }
+
+  .hero-title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--fg);
+    margin: 0 0 16px;
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+  }
+
+  .hero-subtitle {
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0;
+  }
+</style>

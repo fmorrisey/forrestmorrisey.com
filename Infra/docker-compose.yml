@@ -1,0 +1,21 @@
+services:
+  site:
+    image: caddy:2
+    container_name: forrest-site
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ../apps/site/dist:/srv:ro
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: forrest-site-tunnel
+    restart: unless-stopped
+    depends_on: [site]
+    command: tunnel --config /etc/cloudflared/config.yml run
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARED_TUNNEL_TOKEN}
+    volumes:
+      - ./cloudflared/config.yml:/etc/cloudflared/config.yml:ro

@@ -1,0 +1,99 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import HeroBanner from "../../components/HeroBanner.astro";
+import { getCollection } from "astro:content";
+
+const posts = await getCollection("writing", ({ data }) => data.published);
+const sortedPosts = posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<BaseLayout title="Writing — Forrest Morrisey" fullWidth={true}>
+  <HeroBanner 
+    title="Writing"
+    subtitle="Thoughts, essays, and reflections"
+    height="medium"
+  />
+
+  <section class="section">
+    <div class="container">
+      {sortedPosts.length > 0 ? (
+        <div class="posts-list">
+          {sortedPosts.map(post => (
+            <article class="post-card card card-hover">
+              <a href={`/writing/${post.slug}`} class="post-link">
+                <h2 class="post-title">{post.data.title}</h2>
+                {post.data.summary || post.data.description ? (
+                  <p class="post-excerpt muted">{post.data.summary || post.data.description}</p>
+                ) : null}
+                <div class="post-meta">
+                  <time class="muted">
+                    {post.data.date.toLocaleDateString('en-US', { 
+                      month: 'long', 
+                      day: 'numeric',
+                      year: 'numeric' 
+                    })}
+                  </time>
+                  {post.data.tags.length > 0 && (
+                    <ul class="badge-list">
+                      {post.data.tags.slice(0, 3).map(tag => (
+                        <li class="badge">{tag}</li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </a>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div class="text-center">
+          <p class="muted">Writing coming soon...</p>
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .post-card {
+    transition: border-color 0.2s;
+  }
+
+  .post-card:hover {
+    border-color: var(--accent);
+  }
+
+  .post-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .post-title {
+    font-size: 1.25rem;
+    margin: 0 0 8px;
+    color: var(--fg);
+  }
+
+  .post-excerpt {
+    margin: 0 0 12px;
+    line-height: 1.6;
+  }
+
+  .post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    align-items: center;
+  }
+
+  .post-meta time {
+    font-size: 0.85rem;
+  }
+</style>

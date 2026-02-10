@@ -1,0 +1,10 @@
+:8080 {
+  root * /srv
+  file_server
+  encode gzip zstd
+
+  @assets {
+    path /assets/* /_astro/*
+  }
+  header @assets Cache-Control "public, max-age=31536000, immutable"
+}

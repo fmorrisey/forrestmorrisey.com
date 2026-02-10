@@ -1,0 +1,48 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import HeroBanner from "../../components/HeroBanner.astro";
+import CardGrid from "../../components/CardGrid.astro";
+import ImageTile from "../../components/ImageTile.astro";
+import { getCollection } from "astro:content";
+
+const adventures = await getCollection("adventures", ({ data }) => data.published);
+const sortedAdventures = adventures.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<BaseLayout title="Adventures — Forrest Morrisey" fullWidth={true}>
+  <HeroBanner 
+    title="Adventures"
+    subtitle="Every journey begins with a choice"
+    height="medium"
+  />
+
+  <section class="section">
+    <div class="container-wide">
+      {sortedAdventures.length > 0 ? (
+        <CardGrid columns={3}>
+          {sortedAdventures.map(adventure => (
+            <ImageTile 
+              href={`/adventures/${adventure.slug}`}
+              image={adventure.data.coverImage}
+              title={adventure.data.title}
+              subtitle={adventure.data.location || adventure.data.heroSubtitle}
+              ctaLabel={adventure.data.ctaLabel}
+              aspectRatio="landscape"
+            />
+          ))}
+        </CardGrid>
+      ) : (
+        <div class="text-center">
+          <p class="muted">Adventures coming soon...</p>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <section class="section text-center">
+    <p class="muted" style="font-style: italic; max-width: 500px; margin: 0 auto var(--space-md);">
+      Enjoying the photos? Check out more in the gallery.
+    </p>
+    <a href="/photography" class="btn btn-outline btn-pill">View Photography</a>
+  </section>
+</BaseLayout>
