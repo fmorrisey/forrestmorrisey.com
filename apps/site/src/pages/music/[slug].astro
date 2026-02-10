@@ -4,7 +4,7 @@ import HeroBanner from "../../components/HeroBanner.astro";
 import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
-  const musicItems = await getCollection("music");
+  const musicItems = await getCollection("music", ({ data }) => data.published);
   return musicItems.map(item => ({
     params: { slug: item.slug },
     props: { item }

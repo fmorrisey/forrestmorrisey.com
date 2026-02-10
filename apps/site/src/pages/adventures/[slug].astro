@@ -4,7 +4,7 @@ import HeroBanner from "../../components/HeroBanner.astro";
 import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
-  const adventures = await getCollection("adventures");
+  const adventures = await getCollection("adventures", ({ data }) => data.published);
   return adventures.map(adventure => ({
     params: { slug: adventure.slug },
     props: { adventure }
@@ -40,7 +40,7 @@ const formattedDate = date.toLocaleDateString('en-US', {
           <h2 class="text-center text-uppercase mb-lg">Gallery</h2>
           <div class="gallery-grid">
             {gallery.map(img => (
-              <a href={img.src} target="_blank" class="gallery-item">
+              <a href={img.src} target="_blank" rel="noopener noreferrer" class="gallery-item">
                 <img src={img.src} alt={img.alt || ""} loading="lazy" />
               </a>
             ))}
