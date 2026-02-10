@@ -1,0 +1,81 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import HeroBanner from "../components/HeroBanner.astro";
+---
+
+<BaseLayout title="About — Forrest Morrisey" fullWidth={true}>
+  <HeroBanner 
+    title="About"
+    subtitle="Builder. Designer. Storyteller."
+    height="medium"
+  />
+
+  <section class="section">
+    <div class="container">
+      <div class="about-content">
+        <div class="about-text prose">
+          <h2>Hi, I'm Forrest</h2>
+          <p>
+            I'm a front-end developer and designer passionate about creating meaningful 
+            digital experiences. I believe in building things with intention — whether 
+            that's a web application, a design system, or a backpacking route through 
+            the wilderness.
+          </p>
+          <p>
+            My work sits at the intersection of technology and design. I love taking 
+            complex problems and crafting elegant, user-centered solutions. When I'm 
+            not coding, you'll find me on a trail somewhere, camera in hand, searching 
+            for the next great view.
+          </p>
+          
+          <h3>What I Do</h3>
+          <ul>
+            <li><strong>Front-End Development</strong> — React, Astro, TypeScript, and modern frameworks</li>
+            <li><strong>UI/UX Design</strong> — Clean, accessible interfaces that delight users</li>
+            <li><strong>Photography</strong> — Landscape and adventure photography</li>
+            <li><strong>Writing</strong> — Essays on tech, design, and the outdoor life</li>
+          </ul>
+
+          <h3>Let's Connect</h3>
+          <p>
+            I'm always interested in new projects, collaborations, and conversations. 
+            Feel free to reach out through my <a href="/contact">contact page</a> or 
+            connect with me on social media.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .about-content {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .about-text h2 {
+    font-size: 1.75rem;
+    margin-bottom: var(--space-md);
+  }
+
+  .about-text h3 {
+    font-size: 1.25rem;
+    margin-top: var(--space-lg);
+    margin-bottom: var(--space-sm);
+  }
+
+  .about-text ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .about-text li {
+    padding: var(--space-xs) 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .about-text li:last-child {
+    border-bottom: none;
+  }
+</style>

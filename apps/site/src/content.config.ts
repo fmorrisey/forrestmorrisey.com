@@ -5,7 +5,15 @@ const base = {
   description: z.string().optional(),
   date: z.coerce.date(),
   tags: z.array(z.string()).default([]),
-  published: z.boolean().default(true)
+  published: z.boolean().default(true),
+  // New fields for Squarespace-style layouts
+  heroImage: z.string().optional(),
+  heroTitle: z.string().optional(),
+  heroSubtitle: z.string().optional(),
+  coverImage: z.string().optional(),
+  featured: z.boolean().default(false),
+  summary: z.string().optional(),
+  ctaLabel: z.string().default("Read"),
 };
 
 const writing = defineCollection({
@@ -15,14 +23,17 @@ const writing = defineCollection({
 
 const adventures = defineCollection({
   type: "content",
-  schema: z.object({ ...base, location: z.string().optional() })
+  schema: z.object({
+    ...base,
+    location: z.string().optional(),
+    gallery: z.array(z.object({ src: z.string(), alt: z.string().optional() })).default([])
+  })
 });
 
 const photography = defineCollection({
   type: "content",
   schema: z.object({
     ...base,
-    coverImage: z.string().optional(),
     gallery: z.array(z.object({ src: z.string(), alt: z.string().optional() })).default([])
   })
 });

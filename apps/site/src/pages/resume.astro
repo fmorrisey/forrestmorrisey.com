@@ -1,15 +1,51 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import HeroBanner from "../components/HeroBanner.astro";
+
 const resumeUrl = "/assets/Forrest-Morrisey-Resume.pdf";
 ---
-<BaseLayout title="Resume — Forrest Morrisey">
-  <section class="card">
-    <h1>Resume</h1>
-    <p><a href={resumeUrl}>Download Resume (PDF)</a></p>
-    <iframe
-      src={resumeUrl}
-      style="width:100%;height:900px;border:1px solid var(--border);border-radius:12px;"
-      loading="lazy"
-    ></iframe>
+
+<BaseLayout title="Resume — Forrest Morrisey" fullWidth={true}>
+  <HeroBanner 
+    title="Resume"
+    subtitle="Experience & Skills"
+    height="small"
+  />
+
+  <section class="section">
+    <div class="container">
+      <div class="resume-actions text-center mb-lg">
+        <a href={resumeUrl} download class="btn btn-primary btn-pill">
+          Download PDF
+        </a>
+      </div>
+      
+      <div class="resume-preview card">
+        <iframe
+          src={resumeUrl}
+          title="Resume Preview"
+          loading="lazy"
+        ></iframe>
+      </div>
+    </div>
   </section>
 </BaseLayout>
+
+<style>
+  .resume-preview {
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .resume-preview iframe {
+    width: 100%;
+    height: 900px;
+    border: none;
+  }
+
+  @media (max-width: 768px) {
+    .resume-preview iframe {
+      height: 600px;
+    }
+  }
+</style>

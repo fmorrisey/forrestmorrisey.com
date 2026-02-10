@@ -1,5 +1,20 @@
 ---
-const { title = "Forrest Morrisey", description = "" } = Astro.props;
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+  fullWidth?: boolean;
+}
+
+const { 
+  title = "Forrest Morrisey", 
+  description = "",
+  fullWidth = false
+} = Astro.props;
+
+const currentPath = Astro.url.pathname;
 ---
 <!doctype html>
 <html lang="en">
@@ -11,27 +26,12 @@ const { title = "Forrest Morrisey", description = "" } = Astro.props;
     <link rel="stylesheet" href="/styles/global.css" />
   </head>
   <body>
-    <header class="container">
-      <nav class="nav">
-        <a href="/"><strong>Forrest Morrisey</strong></a>
-        <div>
-          <a href="/portfolio">Portfolio</a>
-          <a href="/writing">Writing</a>
-          <a href="/adventures">Adventures</a>
-          <a href="/photography">Photography</a>
-          <a href="/resume">Resume</a>
-          <a href="/about">About</a>
-          <a href="/contact">Contact</a>
-        </div>
-      </nav>
-    </header>
+    <SiteHeader currentPath={currentPath} />
 
-    <main class="container">
+    <main class:list={[{ container: !fullWidth }]}>
       <slot />
     </main>
 
-    <footer class="container muted" style="padding-bottom: 40px;">
-      © {new Date().getFullYear()} Forrest Morrisey
-    </footer>
+    <SiteFooter />
   </body>
 </html>

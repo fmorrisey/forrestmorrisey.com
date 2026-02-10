@@ -1,0 +1,51 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import HeroBanner from "../../components/HeroBanner.astro";
+import CardGrid from "../../components/CardGrid.astro";
+import ImageTile from "../../components/ImageTile.astro";
+import { getCollection } from "astro:content";
+
+const projects = await getCollection("portfolio", ({ data }) => data.published);
+const sortedProjects = projects.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<BaseLayout title="Portfolio — Forrest Morrisey" fullWidth={true}>
+  <HeroBanner 
+    title="Projects"
+    subtitle="Building things that matter"
+    height="medium"
+  />
+
+  <section class="section">
+    <div class="container text-center">
+      <h2 class="text-uppercase">Front End Developer & Designer</h2>
+      <p class="muted" style="max-width: 600px; margin: 0 auto;">
+        Hi, I'm Forrest. I build modern web applications with a focus on clean design, 
+        performance, and user experience. Here's some of my recent work.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-wide">
+      {sortedProjects.length > 0 ? (
+        <CardGrid columns={3}>
+          {sortedProjects.map(project => (
+            <ImageTile 
+              href={`/portfolio/${project.slug}`}
+              image={project.data.coverImage}
+              title={project.data.title}
+              subtitle={project.data.role || project.data.description}
+              ctaLabel="View Project"
+              aspectRatio="landscape"
+            />
+          ))}
+        </CardGrid>
+      ) : (
+        <div class="text-center">
+          <p class="muted">Projects coming soon...</p>
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>

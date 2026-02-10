@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+  <rect fill="#141824" width="800" height="500"/>
+  <text x="400" y="230" font-family="system-ui" font-size="32" fill="#9ca3af" text-anchor="middle">WINTER ICE</text>
+  <text x="400" y="270" font-family="system-ui" font-size="16" fill="#6b7280" text-anchor="middle">Cover Image</text>
+  <line x1="340" y1="300" x2="460" y2="300" stroke="#2ee59d" stroke-width="2"/>
+</svg>

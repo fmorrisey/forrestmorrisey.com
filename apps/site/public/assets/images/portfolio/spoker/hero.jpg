@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <rect fill="#141824" width="1920" height="1080"/>
+  <text x="960" y="500" font-family="system-ui" font-size="48" fill="#9ca3af" text-anchor="middle">SPOKER V2</text>
+  <text x="960" y="560" font-family="system-ui" font-size="24" fill="#6b7280" text-anchor="middle">Hero Image Placeholder</text>
+  <line x1="880" y1="600" x2="1040" y2="600" stroke="#2ee59d" stroke-width="3"/>
+</svg>

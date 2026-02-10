@@ -1,0 +1,141 @@
+---
+interface Props {
+  href: string;
+  image?: string;
+  title: string;
+  subtitle?: string;
+  ctaLabel?: string;
+  aspectRatio?: "square" | "landscape" | "portrait";
+}
+
+const { 
+  href, 
+  image, 
+  title, 
+  subtitle, 
+  ctaLabel = "Read",
+  aspectRatio = "landscape"
+} = Astro.props;
+
+const ratioClasses = {
+  square: "ratio-square",
+  landscape: "ratio-landscape",
+  portrait: "ratio-portrait"
+};
+---
+
+<a href={href} class:list={["image-tile", ratioClasses[aspectRatio]]}>
+  <div 
+    class="tile-image" 
+    style={image ? `background-image: url(${image})` : undefined}
+  >
+    <div class="tile-overlay">
+      <div class="tile-content">
+        <h3 class="tile-title">{title}</h3>
+        {subtitle && <p class="tile-subtitle">{subtitle}</p>}
+        <span class="tile-cta">{ctaLabel}</span>
+      </div>
+    </div>
+  </div>
+</a>
+
+<style>
+  .image-tile {
+    display: block;
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    text-decoration: none;
+  }
+
+  .tile-image {
+    width: 100%;
+    background-color: var(--card);
+    background-size: cover;
+    background-position: center;
+    position: relative;
+  }
+
+  .ratio-square .tile-image {
+    aspect-ratio: 1 / 1;
+  }
+
+  .ratio-landscape .tile-image {
+    aspect-ratio: 16 / 10;
+  }
+
+  .ratio-portrait .tile-image {
+    aspect-ratio: 3 / 4;
+  }
+
+  .tile-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(11, 13, 16, 0.9) 0%,
+      rgba(11, 13, 16, 0.4) 50%,
+      rgba(11, 13, 16, 0.2) 100%
+    );
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 24px;
+    transition: background 0.3s ease;
+  }
+
+  .image-tile:hover .tile-overlay {
+    background: linear-gradient(
+      to top,
+      rgba(11, 13, 16, 0.95) 0%,
+      rgba(11, 13, 16, 0.6) 50%,
+      rgba(11, 13, 16, 0.4) 100%
+    );
+  }
+
+  .tile-content {
+    text-align: center;
+    transform: translateY(10px);
+    transition: transform 0.3s ease;
+  }
+
+  .image-tile:hover .tile-content {
+    transform: translateY(0);
+  }
+
+  .tile-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--fg);
+    margin: 0 0 8px;
+  }
+
+  .tile-subtitle {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin: 0 0 16px;
+    letter-spacing: 0.05em;
+  }
+
+  .tile-cta {
+    display: inline-block;
+    padding: 8px 24px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--bg);
+    background: var(--accent);
+    border-radius: 4px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .image-tile:hover .tile-cta {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>

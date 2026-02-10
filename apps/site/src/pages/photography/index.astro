@@ -1,0 +1,41 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import HeroBanner from "../../components/HeroBanner.astro";
+import CardGrid from "../../components/CardGrid.astro";
+import ImageTile from "../../components/ImageTile.astro";
+import { getCollection } from "astro:content";
+
+const galleries = await getCollection("photography", ({ data }) => data.published);
+const sortedGalleries = galleries.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<BaseLayout title="Photography — Forrest Morrisey" fullWidth={true}>
+  <HeroBanner 
+    title="Photo Galleries"
+    subtitle="Visual stories from the trail and beyond"
+    height="medium"
+  />
+
+  <section class="section">
+    <div class="container-wide">
+      {sortedGalleries.length > 0 ? (
+        <CardGrid columns={3}>
+          {sortedGalleries.map(gallery => (
+            <ImageTile 
+              href={`/photography/${gallery.slug}`}
+              image={gallery.data.coverImage}
+              title={gallery.data.title}
+              subtitle={gallery.data.summary || gallery.data.description}
+              ctaLabel="See More"
+              aspectRatio="landscape"
+            />
+          ))}
+        </CardGrid>
+      ) : (
+        <div class="text-center">
+          <p class="muted">Photo galleries coming soon...</p>
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>

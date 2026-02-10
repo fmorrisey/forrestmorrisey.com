@@ -1,0 +1,50 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import HeroBanner from "../../components/HeroBanner.astro";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const galleries = await getCollection("photography");
+  return galleries.map(gallery => ({
+    params: { slug: gallery.slug },
+    props: { gallery }
+  }));
+}
+
+const { gallery } = Astro.props;
+const { Content } = await render(gallery);
+const { title, heroImage, heroSubtitle, description, gallery: images } = gallery.data;
+---
+
+<BaseLayout title={`${title} — Forrest Morrisey`} fullWidth={true}>
+  <HeroBanner 
+    image={heroImage}
+    title={title}
+    subtitle={heroSubtitle || description}
+    height="medium"
+  />
+
+  <article class="section">
+    <div class="container">
+      <div class="prose">
+        <Content />
+      </div>
+
+      {images && images.length > 0 && (
+        <section class="mt-lg">
+          <div class="gallery-grid">
+            {images.map(img => (
+              <a href={img.src} target="_blank" class="gallery-item">
+                <img src={img.src} alt={img.alt || ""} loading="lazy" />
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+    </div>
+  </article>
+
+  <nav class="section text-center">
+    <a href="/photography" class="btn btn-outline btn-pill">← Back to Photography</a>
+  </nav>
+</BaseLayout>
