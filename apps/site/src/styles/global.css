@@ -12,8 +12,12 @@
   --link: #cbd5ff;
   
   /* Accent - Squarespace green */
-  --accent: #2ee59d;
-  --accent-dark: #1fb87a;
+  --color-accent-green: #2ee59d;
+  --color-bg-dark: #0f1218;
+  --color-text-light: #e7eaf0;
+  --color-text-muted: #a6adbb;
+  --border-mid: #232a3a;
+  --link: var(--color-accent-green);  
   
   /* Spacing scale */
   --space-xs: 8px;
@@ -30,6 +34,7 @@
   /* Transitions */
   --transition-fast: 150ms ease;
   --transition-normal: 250ms ease;
+
 }
 
 /* ==========================================================================
