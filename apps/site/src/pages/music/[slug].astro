@@ -1,0 +1,80 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import HeroBanner from "../../components/HeroBanner.astro";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const musicItems = await getCollection("music");
+  return musicItems.map(item => ({
+    params: { slug: item.slug },
+    props: { item }
+  }));
+}
+
+const { item } = Astro.props;
+const { Content } = await render(item);
+const { title, heroImage, heroSubtitle, description, soundcloudUrl, bandcampUrl, spotifyUrl, embedCode } = item.data;
+---
+
+<BaseLayout title={`${title} — Forrest Morrisey`} fullWidth={true}>
+  <HeroBanner 
+    image={heroImage}
+    title={title}
+    subtitle={heroSubtitle || description}
+    height="medium"
+  />
+
+  <article class="section">
+    <div class="container">
+      <div class="prose">
+        <Content />
+      </div>
+
+      {/* Embed placeholder for SoundCloud/Bandcamp widgets */}
+      {embedCode && (
+        <div class="embed-container mt-lg" set:html={embedCode} />
+      )}
+
+      {/* External links */}
+      {(soundcloudUrl || bandcampUrl || spotifyUrl) && (
+        <div class="music-links mt-lg text-center">
+          <h3 class="text-uppercase mb-md">Listen On</h3>
+          <div style="display: flex; justify-content: center; gap: var(--space-sm); flex-wrap: wrap;">
+            {soundcloudUrl && (
+              <a href={soundcloudUrl} target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-pill">
+                SoundCloud
+              </a>
+            )}
+            {bandcampUrl && (
+              <a href={bandcampUrl} target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-pill">
+                Bandcamp
+              </a>
+            )}
+            {spotifyUrl && (
+              <a href={spotifyUrl} target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-pill">
+                Spotify
+              </a>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  </article>
+
+  <nav class="section text-center">
+    <a href="/music" class="btn btn-outline btn-pill">← Back to Music</a>
+  </nav>
+</BaseLayout>
+
+<style>
+  .embed-container {
+    max-width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .embed-container iframe {
+    width: 100%;
+    border: none;
+  }
+</style>

@@ -1,0 +1,53 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import HeroBanner from "../../components/HeroBanner.astro";
+import CardGrid from "../../components/CardGrid.astro";
+import ImageTile from "../../components/ImageTile.astro";
+import { getCollection } from "astro:content";
+
+const videos = await getCollection("youtube", ({ data }) => data.published);
+const sortedVideos = videos.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<BaseLayout title="YouTube — Forrest Morrisey" fullWidth={true}>
+  <HeroBanner 
+    title="Forrest Builds More"
+    subtitle="Building in Public"
+    height="medium"
+  />
+
+  <section class="section">
+    <div class="container text-center">
+      <p class="muted" style="max-width: 600px; margin: 0 auto var(--space-lg);">
+        A YouTube channel documenting builds, projects, and adventures. 
+        From coding projects to outdoor gear to maker content — if I'm building it, I'm probably filming it.
+      </p>
+      <a href="https://youtube.com/@ForrestBuildsMore" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-pill">
+        Subscribe on YouTube
+      </a>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-wide">
+      {sortedVideos.length > 0 ? (
+        <CardGrid columns={3}>
+          {sortedVideos.map(video => (
+            <ImageTile 
+              href={`/youtube/${video.slug}`}
+              image={video.data.coverImage}
+              title={video.data.title}
+              subtitle={video.data.summary || video.data.description}
+              ctaLabel={video.data.ctaLabel || "Watch"}
+              aspectRatio="landscape"
+            />
+          ))}
+        </CardGrid>
+      ) : (
+        <div class="text-center">
+          <p class="muted">Videos coming soon...</p>
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>

@@ -53,4 +53,25 @@ const portfolio = defineCollection({
   })
 });
 
-export const collections = { writing, adventures, photography, portfolio };
+const music = defineCollection({
+  type: "content",
+  schema: z.object({
+    ...base,
+    soundcloudUrl: z.string().url().optional(),
+    bandcampUrl: z.string().url().optional(),
+    spotifyUrl: z.string().url().optional(),
+    embedCode: z.string().optional(),
+  })
+});
+
+const youtube = defineCollection({
+  type: "content",
+  schema: z.object({
+    ...base,
+    videoId: z.string().optional(),
+    playlistId: z.string().optional(),
+    channelUrl: z.string().url().optional(),
+  })
+});
+
+export const collections = { writing, adventures, photography, portfolio, music, youtube };
