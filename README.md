@@ -46,4 +46,7 @@ Caddy serves the static `dist/` folder. Cloudflare Tunnel exposes it securely.
 
 ## Live
 
-[forrestmorrisey.com](https://forrestmorrisey.com)
+[forrest.rainierserver.com](forrest.rainierserver.com)
+
+Coming Soon
+~~[forrestmorrisey.com](https://forrestmorrisey.com)~~
