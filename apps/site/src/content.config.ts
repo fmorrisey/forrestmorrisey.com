@@ -49,7 +49,8 @@ const portfolio = defineCollection({
         repo: z.string().url().optional(),
         live: z.string().url().optional()
       })
-      .default({})
+      .default({}),
+    gallery: z.array(z.object({ src: z.string(), alt: z.string().optional() })).default([])
   })
 });
 

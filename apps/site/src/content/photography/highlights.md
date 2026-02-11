@@ -4,25 +4,23 @@ description: A curated collection of standout images
 date: 2020-01-01
 tags: [highlights, curated, best-of]
 published: true
-coverImage: /assets/images/photography/highlights/cover.jpg
-heroImage: /assets/images/photography/highlights/hero.jpg
+coverImage: /assets/images/photography/highlights/portrait-cotton.jpg
+heroImage: /assets/images/photography/highlights/bridge-river-wauke.jpg
 heroSubtitle: Best Of Collection
-summary: A curated selection of my favorite and most impactful photographs from various projects and adventures.
+summary: Explore my favorite works that highlight many Milwaukee landmarks, nature, and portraits.
 featured: true
-ctaLabel: See More
+ctaLabel: Browse More
 gallery:
-  - src: /assets/images/photography/highlights/01.jpg
-    alt: Featured landscape
-  - src: /assets/images/photography/highlights/02.jpg
-    alt: Dramatic sky
-  - src: /assets/images/photography/highlights/03.jpg
-    alt: Nature detail
-  - src: /assets/images/photography/highlights/04.jpg
-    alt: Adventure moment
-  - src: /assets/images/photography/highlights/05.jpg
-    alt: Golden hour
-  - src: /assets/images/photography/highlights/06.jpg
-    alt: Wildlife encounter
+  - src: /assets/images/photography/highlights/portrait-cotton.jpg
+    alt: Portrait with cotton
+  - src: /assets/images/photography/highlights/industrial-sunset.jpg
+    alt: Industrial sunset
+  - src: /assets/images/photography/highlights/bridge-river-wauke.jpg
+    alt: The Bridge over the River Wauke
+  - src: /assets/images/photography/highlights/clouds.jpg
+    alt: Clouds
+  - src: /assets/images/photography/highlights/maple-leaves.jpg
+    alt: Maple Leaves
 ---
 
 ## Highlights
