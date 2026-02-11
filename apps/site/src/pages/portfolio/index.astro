@@ -12,22 +12,69 @@ const sortedProjects = projects.sort((a, b) => b.data.date.getTime() - a.data.da
 <BaseLayout title="Portfolio — Forrest Morrisey" fullWidth={true}>
   <HeroBanner 
     title="Projects"
-    subtitle="Building things that matter"
+    subtitle="Software Engineer"
     height="medium"
   />
 
   <section class="section">
-    <div class="container text-center">
-      <h2 class="text-uppercase">Front End Developer & Designer</h2>
-      <p class="muted" style="max-width: 600px; margin: 0 auto;">
-        Hi, I'm Forrest. I build modern web applications with a focus on clean design, 
-        performance, and user experience. Here's some of my recent work.
-      </p>
+    <div class="container">
+      <div class="intro-content">
+        <h2>Hi, I'm Forrest Morrisey</h2>
+        <ul class="intro-list">
+          <li>5 years building frontend-focused features in regulated environments</li>
+          <li>Former STEM educator — taught 1,000+ students annually</li>
+          <li>Bridging design systems theory and implementation</li>
+          <li>Strong focus on accessibility, performance, and developer experience</li>
+          <li>Based in Milwaukee, Wisconsin</li>
+        </ul>
+      </div>
+
+      <div class="skills-grid">
+        <div class="skill-block card">
+          <h3>Frontend</h3>
+          <p>Angular, React, TypeScript, JavaScript (ES6+), HTML5, CSS3, SCSS, RxJS, Responsive Design, Accessibility</p>
+        </div>
+        <div class="skill-block card">
+          <h3>Testing & DevOps</h3>
+          <p>Cypress, Jest, Karma, Jasmine, Cucumber, Jenkins, Docker, Git, CI/CD Pipelines, Cloudflare</p>
+        </div>
+        <div class="skill-block card">
+          <h3>Backend & APIs</h3>
+          <p>Node.js, Express, REST APIs, RabbitMQ, Python, C# .NET, Bash, MongoDB, SQL</p>
+        </div>
+        <div class="skill-block card">
+          <h3>Tools & Processes</h3>
+          <p>Figma, Grafana, Agile/Scrum, Confluence, Rally, Performance Optimization, Localization</p>
+        </div>
+      </div>
+
+      <div class="experience-section">
+        <h3>Experience</h3>
+        <div class="experience-item">
+          <strong>Software Engineer — GE HealthCare</strong>
+          <p class="muted">Core UI engineer on SIGNA One, next-gen AI-powered MRI workflow system</p>
+        </div>
+        <div class="experience-item">
+          <strong>Software Engineering Specialist — GE HealthCare</strong>
+          <p class="muted">Legacy platform migration to modern microservices architecture</p>
+        </div>
+        <div class="experience-item">
+          <strong>STEM & Design Educator — Discovery World</strong>
+          <p class="muted">Design curriculum development, 2019 Friends of Education Award</p>
+        </div>
+      </div>
+
+      <div class="cta-row">
+        <a href="/resume" class="btn btn-outline btn-pill">Download Resume</a>
+        <a href="/about" class="btn btn-outline btn-pill">About Me</a>
+        <a href="https://github.com/fmorrisey" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-pill">GitHub</a>
+      </div>
     </div>
   </section>
 
   <section class="section">
     <div class="container-wide">
+      <h2 class="text-center text-uppercase" style="margin-bottom: var(--space-lg);">Projects</h2>
       {sortedProjects.length > 0 ? (
         <CardGrid columns={3}>
           {sortedProjects.map(project => (
@@ -49,3 +96,91 @@ const sortedProjects = projects.sort((a, b) => b.data.date.getTime() - a.data.da
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .intro-content {
+    max-width: 700px;
+    margin: 0 auto var(--space-xl);
+    text-align: center;
+  }
+
+  .intro-content h2 {
+    margin-bottom: var(--space-md);
+  }
+
+  .intro-list {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .intro-list li {
+    padding: var(--space-xs) 0;
+    padding-left: 1.5rem;
+    position: relative;
+  }
+
+  .intro-list li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+  }
+
+  .skill-block {
+    text-align: center;
+  }
+
+  .skill-block h3 {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    margin-bottom: var(--space-sm);
+  }
+
+  .skill-block p {
+    color: var(--muted);
+    margin: 0;
+  }
+
+  .experience-section {
+    max-width: 600px;
+    margin: 0 auto var(--space-xl);
+  }
+
+  .experience-section h3 {
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.9rem;
+    color: var(--accent);
+    margin-bottom: var(--space-md);
+    text-align: center;
+  }
+
+  .experience-item {
+    padding: var(--space-sm) 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .experience-item:last-child {
+    border-bottom: none;
+  }
+
+  .cta-row {
+    display: flex;
+    gap: var(--space-md);
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: var(--space-xl);
+  }
+</style>
