@@ -3,6 +3,8 @@ title: "Happnin'"
 date: 2020-12-10
 published: true
 role: "Team Lead & Full Stack Developer"
+coverImage: /assets/images/portfolio/happnin/01.png
+heroImage: /assets/images/portfolio/happnin/01.png
 tech:
   - C#
   - .NET Core MVC
@@ -18,6 +20,19 @@ tags:
   - MVC
   - Team Project
   - Bootcamp
+gallery:
+  - src: /assets/images/portfolio/happnin/01.png
+    alt: Happnin app overview
+  - src: /assets/images/portfolio/happnin/02.png
+    alt: Event listing page
+  - src: /assets/images/portfolio/happnin/03.png
+    alt: Event details view
+  - src: /assets/images/portfolio/happnin/04.png
+    alt: Mobile event view
+  - src: /assets/images/portfolio/happnin/05.png
+    alt: Event map integration
+  - src: /assets/images/portfolio/happnin/06.png
+    alt: Event calendar
 ---
 
 ## Group Capstone Project

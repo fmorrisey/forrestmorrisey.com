@@ -3,6 +3,8 @@ title: "Explore Nepal"
 date: 2021-02-24
 published: true
 role: "Designer & Front End Developer"
+coverImage: /assets/images/portfolio/explore-nepal/01.png
+heroImage: /assets/images/portfolio/explore-nepal/01.png
 tech:
   - React
   - SwiperJS
@@ -15,6 +17,13 @@ tags:
   - Landing Page
   - Design
   - Personal Project
+gallery:
+  - src: /assets/images/portfolio/explore-nepal/01.png
+    alt: Nepal home page
+  - src: /assets/images/portfolio/explore-nepal/02.png
+    alt: Everest destination
+  - src: /assets/images/portfolio/explore-nepal/03.png
+    alt: Annapurna destination
 ---
 
 ## Project Overview

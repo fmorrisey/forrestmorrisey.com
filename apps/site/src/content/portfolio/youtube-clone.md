@@ -3,6 +3,8 @@ title: "YouTube Clone"
 date: 2021-06-03
 published: true
 role: "Front End Developer"
+coverImage: /assets/images/portfolio/youtube-clone/01.png
+heroImage: /assets/images/portfolio/youtube-clone/01.png
 tech:
   - MongoDB
   - Express.js
@@ -18,6 +20,9 @@ tags:
   - Clone
   - Material-UI
   - Personal Project
+gallery:
+  - src: /assets/images/portfolio/youtube-clone/01.png
+    alt: YouTube Clone interface
 ---
 
 ## Project Overview

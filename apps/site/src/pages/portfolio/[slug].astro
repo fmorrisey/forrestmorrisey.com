@@ -13,7 +13,7 @@ export async function getStaticPaths() {
 
 const { project } = Astro.props;
 const { Content } = await render(project);
-const { title, heroImage, heroSubtitle, description, role, tech, links } = project.data;
+const { title, heroImage, heroSubtitle, description, role, tech, links, gallery } = project.data;
 ---
 
 <BaseLayout title={`${title} — Forrest Morrisey`} fullWidth={true}>
@@ -36,7 +36,7 @@ const { title, heroImage, heroSubtitle, description, role, tech, links } = proje
             </div>
           )}
           
-          {tech.length > 0 && (
+          {tech && tech.length > 0 && (
             <div>
               <h3 class="text-uppercase muted" style="font-size: 0.75rem; margin-bottom: 8px;">Tech Stack</h3>
               <ul class="badge-list">
@@ -45,7 +45,7 @@ const { title, heroImage, heroSubtitle, description, role, tech, links } = proje
             </div>
           )}
           
-          {(links.repo || links.live) && (
+          {links && (links.repo || links.live) && (
             <div>
               <h3 class="text-uppercase muted" style="font-size: 0.75rem; margin-bottom: 8px;">Links</h3>
               <div style="display: flex; gap: var(--space-sm);">
@@ -56,6 +56,20 @@ const { title, heroImage, heroSubtitle, description, role, tech, links } = proje
           )}
         </div>
       </div>
+
+      {/* Project Gallery */}
+      {gallery && gallery.length > 0 && (
+        <section class="mb-lg">
+          <h2 class="text-center mb-md">Screenshots</h2>
+          <div class="gallery-grid">
+            {gallery.map(img => (
+              <a href={img.src} target="_blank" rel="noopener noreferrer" class="gallery-item">
+                <img src={img.src} alt={img.alt || ""} loading="lazy" />
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Project Content */}
       <div class="prose">
