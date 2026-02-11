@@ -50,3 +50,7 @@ Comming Soon: ~~[forrest.rainierserver.com]([forrest.rainierserver.com](https://
 
 Coming Soon
 ~~[forrestmorrisey.com](https://forrestmorrisey.com)~~
+
+---
+
+© 2026 Forrest Morrisey. All rights reserved.
