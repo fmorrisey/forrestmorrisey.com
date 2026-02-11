@@ -26,3 +26,7 @@ pnpm-debug.log*
 
 .vscode/
 agents/
+
+# Content
+scrapped-site/
+docs/

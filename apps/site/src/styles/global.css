@@ -3,21 +3,23 @@
    ========================================================================== */
 
 :root {
-  /* Core palette */
+  /* Core palette - Squarespace Migration Theme */
   --bg: #0b0d10;
-  --fg: #f5f5f5;
-  --muted: #9ca3af;
+  --fg: #e7eaf0;
+  --muted: #a6adbb;
   --card: #141824;
+  --surface: #141824;
   --border: #232a3a;
-  --link: #cbd5ff;
   
-  /* Accent - Squarespace green */
-  --color-accent-green: #2ee59d;
+  /* Accent - Squarespace signature green */
+  --accent: #00ff71;
+  --accent-dark: #00cc5a;
+  --color-accent-green: #00ff71;
   --color-bg-dark: #0f1218;
   --color-text-light: #e7eaf0;
   --color-text-muted: #a6adbb;
   --border-mid: #232a3a;
-  --link: var(--color-accent-green);  
+  --link: var(--accent);  
   
   /* Spacing scale */
   --space-xs: 8px;

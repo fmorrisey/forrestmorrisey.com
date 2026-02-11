@@ -12,7 +12,7 @@ const sortedGalleries = galleries.sort((a, b) => b.data.date.getTime() - a.data.
 <BaseLayout title="Photography — Forrest Morrisey" fullWidth={true}>
   <HeroBanner 
     title="Photo Galleries"
-    subtitle="Visual stories from the trail and beyond"
+    subtitle="Every journey begins with a choice"
     height="medium"
   />
 
@@ -37,5 +37,9 @@ const sortedGalleries = galleries.sort((a, b) => b.data.date.getTime() - a.data.
         </div>
       )}
     </div>
+  </section>
+
+  <section class="section text-center">
+    <a href="/adventures" class="btn btn-outline btn-pill">Join My Adventures</a>
   </section>
 </BaseLayout>

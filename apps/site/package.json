@@ -4,12 +4,13 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
+    "dev:host": "astro dev --host",
     "build": "astro build",
     "preview": "astro preview --host 0.0.0.0 --port 4321",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "astro": "^4.16.0",
+    "astro": "^5.17.1",
     "zod": "^3.23.8"
   },
   "devDependencies": {

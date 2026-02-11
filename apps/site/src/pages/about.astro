@@ -5,43 +5,98 @@ import HeroBanner from "../components/HeroBanner.astro";
 
 <BaseLayout title="About — Forrest Morrisey" fullWidth={true}>
   <HeroBanner 
-    title="About"
-    subtitle="Builder. Designer. Storyteller."
+    title="Forrest Morrisey"
+    subtitle="Software Engineer · Milwaukee, WI"
     height="medium"
   />
 
   <section class="section">
     <div class="container">
       <div class="about-content">
-        <div class="about-text prose">
-          <h2>Hi, I'm Forrest</h2>
+        <div class="about-intro">
           <p>
-            I'm a front-end developer and designer passionate about creating meaningful 
-            digital experiences. I believe in building things with intention — whether 
-            that's a web application, a design system, or a backpacking route through 
-            the wilderness.
+            Platform engineer with a unique background bridging design systems theory and implementation. 
+            Former STEM educator who taught 1,000+ students annually—now applies that same systems thinking 
+            to developer experience, CI/CD optimization, and building infrastructure that engineering teams depend on.
           </p>
-          <p>
-            My work sits at the intersection of technology and design. I love taking 
-            complex problems and crafting elegant, user-centered solutions. When I'm 
-            not coding, you'll find me on a trail somewhere, camera in hand, searching 
-            for the next great view.
+          <p style="margin-top: var(--space-sm);">
+            5 years building frontend-focused features in regulated environments, with strong focus on 
+            accessibility, performance, and making complex workflows intuitive.
           </p>
-          
-          <h3>What I Do</h3>
-          <ul>
-            <li><strong>Front-End Development</strong> — React, Astro, TypeScript, and modern frameworks</li>
-            <li><strong>UI/UX Design</strong> — Clean, accessible interfaces that delight users</li>
-            <li><strong>Photography</strong> — Landscape and adventure photography</li>
-            <li><strong>Writing</strong> — Essays on tech, design, and the outdoor life</li>
-          </ul>
+        </div>
 
-          <h3>Let's Connect</h3>
-          <p>
-            I'm always interested in new projects, collaborations, and conversations. 
-            Feel free to reach out through my <a href="/contact">contact page</a> or 
-            connect with me on social media.
-          </p>
+        <div class="about-section">
+          <h2>Experience</h2>
+          <ul class="experience-list">
+            <li>
+              <strong>Software Engineer — GE HealthCare</strong>
+              <span class="muted">April 2024 – October 2025 · Waukesha, WI (Hybrid)</span>
+              <p class="experience-desc">Core UI engineer on SIGNA One—GE HealthCare's next-generation AI-powered MRI workflow system. Cut Jenkins pipeline by 57%, improved app load times by 35%, onboarded 4 developers as UI POC.</p>
+            </li>
+            <li>
+              <strong>Software Engineering Specialist — GE HealthCare</strong>
+              <span class="muted">January 2022 – March 2024 · Remote</span>
+              <p class="experience-desc">Contributed to legacy LX platform migration to modern microservices architecture. Built integration automation tools saving 95% manual work.</p>
+            </li>
+            <li>
+              <strong>User Interface Developer — GE HealthCare</strong>
+              <span class="muted">June 2021 – December 2021 · Remote (Contract-to-Hire)</span>
+              <p class="experience-desc">Promoted to full-time within 6 months. Delivered early-stage UI features for production medical device software.</p>
+            </li>
+            <li>
+              <strong>Jr. Web Developer — SeventySeven LLC</strong>
+              <span class="muted">March 2021 – May 2021 · Milwaukee, WI</span>
+              <p class="experience-desc">Web development for enterprise clients including Lilly, Abbvie, Chevrolet, Everbrite, and EcoLab.</p>
+            </li>
+            <li>
+              <strong>STEM & Design Educator — Discovery World & Notre Dame School</strong>
+              <span class="muted">2017 – 2020 · Milwaukee, WI</span>
+              <p class="experience-desc">Created design curriculum for print and digital media. Delivered hands-on STEM workshops for 1,000+ students annually. Led Girls Who Code program teaching Python.</p>
+            </li>
+          </ul>
+        </div>
+
+        <div class="about-section">
+          <h2>Education</h2>
+          <div class="education-item">
+            <h3>devCodeCamp</h3>
+            <p class="muted">Full-Stack Software Development Certificate</p>
+          </div>
+          <div class="education-item">
+            <h3>University of Wisconsin – Milwaukee</h3>
+            <p class="muted">Bachelor of Arts in Anthropology</p>
+          </div>
+          <div class="education-item">
+            <h3>University of Wisconsin – Waukesha</h3>
+            <p class="muted">Associate of Arts and Science</p>
+          </div>
+          <div class="education-item">
+            <h3>Rochester Institute of Technology</h3>
+            <p class="muted">Coursework in Information Technology & Graphic Design</p>
+          </div>
+        </div>
+
+        <div class="about-section">
+          <h2>Highlights</h2>
+          <ul class="accomplishment-list">
+            <li>
+              <strong>SIGNA One Launch</strong>
+              <span class="muted">— Core UI engineer on GE HealthCare's AI-powered MRI system (RSNA 2025)</span>
+            </li>
+            <li>
+              <strong>2019 Friends of Education Award</strong>
+              <span class="muted">— Wisconsin DPI recognition for STEM education contributions</span>
+            </li>
+            <li>
+              <strong>Ride Across Wisconsin</strong>
+              <span class="muted">— 233 miles (2019), 175 miles (2018)</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="about-cta">
+          <a href="/resume" class="btn btn-outline btn-pill">View Resume</a>
+          <a href="/contact" class="btn btn-primary btn-pill">Get in Touch</a>
         </div>
       </div>
     </div>
@@ -50,32 +105,72 @@ import HeroBanner from "../components/HeroBanner.astro";
 
 <style>
   .about-content {
-    max-width: 700px;
+    max-width: 750px;
     margin: 0 auto;
   }
 
-  .about-text h2 {
-    font-size: 1.75rem;
+  .about-intro {
+    font-size: 1.1rem;
+    margin-bottom: var(--space-xl);
+    text-align: center;
+  }
+
+  .about-section {
+    margin-bottom: var(--space-xl);
+  }
+
+  .about-section h2 {
+    font-size: 1.5rem;
     margin-bottom: var(--space-md);
+    padding-bottom: var(--space-xs);
+    border-bottom: 2px solid var(--accent);
+    display: inline-block;
   }
 
-  .about-text h3 {
-    font-size: 1.25rem;
-    margin-top: var(--space-lg);
-    margin-bottom: var(--space-sm);
-  }
-
-  .about-text ul {
+  .experience-list,
+  .accomplishment-list {
     list-style: none;
     padding: 0;
   }
 
-  .about-text li {
-    padding: var(--space-xs) 0;
+  .experience-list li,
+  .accomplishment-list li {
+    padding: var(--space-sm) 0;
     border-bottom: 1px solid var(--border);
   }
 
-  .about-text li:last-child {
+  .experience-list li:last-child,
+  .accomplishment-list li:last-child {
     border-bottom: none;
+  }
+
+  .education-item {
+    margin-bottom: var(--space-md);
+    padding: var(--space-md);
+    background: var(--card);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  .education-item h3 {
+    font-size: 1.1rem;
+    margin-bottom: var(--space-xs);
+  }
+
+  .education-item p {
+    margin-bottom: 0;
+  }
+
+  .experience-desc {
+    margin-top: var(--space-xs);
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+
+  .about-cta {
+    margin-top: var(--space-xl);
+    display: flex;
+    gap: var(--space-md);
+    justify-content: center;
   }
 </style>
