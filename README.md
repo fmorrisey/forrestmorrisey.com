@@ -39,7 +39,7 @@ Content lives in `apps/site/src/content/` as Markdown files with YAML frontmatte
 
 ```bash
 cd apps/site && npm run build
-cd ../../Infra && docker compose up -d
+cd ../../infra && docker compose up -d
 ```
 
 Caddy serves the static `dist/` folder. Cloudflare Tunnel exposes it securely.
