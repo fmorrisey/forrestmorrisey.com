@@ -57,7 +57,7 @@ else
 fi
 
 # --- 3. runner download ----------------------------------------------------
-if [ -x "$RUNNER_DIR/run.sh" ]; then
+if [ -x "$RUNNER_DIR/bin/Runner.Listener" ]; then
   log "runner already installed at $RUNNER_DIR, skipping download"
 else
   RUNNER_VERSION="$(gh api repos/actions/runner/releases/latest --jq .tag_name | sed 's/^v//')"
@@ -80,23 +80,31 @@ else
   log "registering runner with $REPO"
   # Short-lived (1h) registration token, fetched fresh so it can't go stale.
   REG_TOKEN="$(gh api -X POST "repos/$REPO/actions/runners/registration-token" --jq .token)"
-  sudo -u "$RUNNER_USER" "$RUNNER_DIR/config.sh" \
+  # config.sh resolves ./bin/... relative to the working directory, so it must
+  # run from the runner root or it emits spurious ldd errors.
+  (cd "$RUNNER_DIR" && sudo -u "$RUNNER_USER" ./config.sh \
     --unattended --replace \
     --url "https://github.com/$REPO" \
     --token "$REG_TOKEN" \
     --name rainier \
     --labels rainier \
-    --work _work
+    --work _work)
 fi
 
 # --- 5. systemd service ----------------------------------------------------
-if systemctl list-units --all --type=service | grep -q 'actions.runner.*\.service'; then
+# Check this runner's own .service marker, not `systemctl | grep actions.runner`:
+# Rainier also hosts a runner for Spokerv2, and a broad match would see that
+# one and silently skip installing this service.
+#
+# svc.sh, like config.sh, must be invoked from the runner root -- otherwise it
+# fails with "Must run from runner root or install is corrupt".
+if [ -f "$RUNNER_DIR/.service" ]; then
   log "runner service already installed"
 else
   log "installing runner as a systemd service"
-  sudo "$RUNNER_DIR/svc.sh" install "$RUNNER_USER"
+  (cd "$RUNNER_DIR" && sudo ./svc.sh install "$RUNNER_USER")
 fi
-sudo "$RUNNER_DIR/svc.sh" start || true
+(cd "$RUNNER_DIR" && sudo ./svc.sh start || true)
 
 # --- 6. point Caddy at the new web root ------------------------------------
 log "recreating Caddy container against $WEB_ROOT"
@@ -108,7 +116,7 @@ sleep 3
 code="$(curl -sS -o /dev/null -w '%{http_code}' --retry 5 --retry-delay 2 --retry-all-errors http://127.0.0.1:8090/ || true)"
 echo "local origin:  HTTP $code"
 echo "public site:   HTTP $(curl -sS -o /dev/null -w '%{http_code}' -m 15 https://forrest.rainierserver.com/ || true)"
-sudo "$RUNNER_DIR/svc.sh" status || true
+(cd "$RUNNER_DIR" && sudo ./svc.sh status || true)
 
 cat <<'EOF'
 
