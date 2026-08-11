@@ -3,19 +3,10 @@ services:
     image: caddy:2
     container_name: forrest-site
     restart: unless-stopped
+    # Port must match the cloudflared ingress rule for forrest.rainierserver.com
+    # (host-level /etc/cloudflared/config.yml -> http://localhost:8090).
     ports:
-      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:8090:8090"
     volumes:
       - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
       - ../apps/site/dist:/srv:ro
-
-  tunnel:
-    image: cloudflare/cloudflared:latest
-    container_name: forrest-site-tunnel
-    restart: unless-stopped
-    depends_on: [site]
-    command: tunnel --config /etc/cloudflared/config.yml run
-    environment:
-      - TUNNEL_TOKEN=${CLOUDFLARED_TUNNEL_TOKEN}
-    volumes:
-      - ./cloudflared/config.yml:/etc/cloudflared/config.yml:ro
