@@ -13,6 +13,7 @@
     "images:webp": "node scripts/optimize-images.mjs --webp"
   },
   "dependencies": {
+    "@astrojs/sitemap": "^3.7.3",
     "astro": "^5.17.1",
     "zod": "^3.23.8"
   },
