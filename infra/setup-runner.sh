@@ -47,7 +47,13 @@ sudo chmod 755 "$WEB_ROOT"
 
 # Seed from the current local build so the site never serves an empty dir
 # between the compose change and the first pipeline run.
-if [ -s "$SITE_DIR/dist/index.html" ]; then
+#
+# Only when the web root is empty. Re-running this script later from a stale
+# working copy must not rsync --delete an old build over live content that the
+# pipeline has since published.
+if [ -s "$WEB_ROOT/index.html" ]; then
+  log "web root already populated, leaving it alone"
+elif [ -s "$SITE_DIR/dist/index.html" ]; then
   log "seeding web root from existing local build"
   sudo rsync -a --delete "$SITE_DIR/dist/" "$WEB_ROOT/"
   sudo chown -R "$RUNNER_USER:$RUNNER_USER" "$WEB_ROOT"
@@ -65,10 +71,14 @@ else
   sudo mkdir -p "$RUNNER_DIR"
   sudo chown "$RUNNER_USER:$RUNNER_USER" "$RUNNER_DIR"
   tarball="actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz"
-  sudo -u "$RUNNER_USER" curl -fsSL -o "/tmp/$tarball" \
+  # Stage inside the runner dir, not /tmp. The download runs as $RUNNER_USER,
+  # and /tmp is sticky-bit, so removing it afterwards as the invoking user
+  # fails with EPERM -- which `rm -f` does not suppress and `set -e` turns into
+  # an abort partway through the install.
+  sudo -u "$RUNNER_USER" curl -fsSL -o "$RUNNER_DIR/$tarball" \
     "https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/${tarball}"
-  sudo -u "$RUNNER_USER" tar xzf "/tmp/$tarball" -C "$RUNNER_DIR"
-  rm -f "/tmp/$tarball"
+  sudo -u "$RUNNER_USER" tar xzf "$RUNNER_DIR/$tarball" -C "$RUNNER_DIR"
+  sudo -u "$RUNNER_USER" rm -f "$RUNNER_DIR/$tarball"
   log "installing runner OS dependencies"
   sudo "$RUNNER_DIR/bin/installdependencies.sh"
 fi
@@ -104,17 +114,29 @@ else
   log "installing runner as a systemd service"
   (cd "$RUNNER_DIR" && sudo ./svc.sh install "$RUNNER_USER")
 fi
-(cd "$RUNNER_DIR" && sudo ./svc.sh start || true)
+# Not `|| true`: if the service will not start there is nothing to deploy to,
+# and the operator needs to see that now rather than after pushing to main and
+# watching a job queue forever.
+(cd "$RUNNER_DIR" && sudo ./svc.sh start)
 
 # --- 6. point Caddy at the new web root ------------------------------------
 log "recreating Caddy container against $WEB_ROOT"
-(cd "$INFRA_DIR" && docker compose up -d)
+# --remove-orphans clears the retired forrest-site-tunnel container. Left
+# running it would be a second cloudflared connector for the same hostname,
+# pointed at the old :8080 origin, causing intermittent 502s.
+(cd "$INFRA_DIR" && docker compose up -d --remove-orphans)
 
 # --- 7. verify -------------------------------------------------------------
 log "verifying"
 sleep 3
 code="$(curl -sS -o /dev/null -w '%{http_code}' --retry 5 --retry-delay 2 --retry-all-errors http://127.0.0.1:8090/ || true)"
 echo "local origin:  HTTP $code"
+# The origin is the one thing this script is responsible for. Fail loudly
+# rather than printing "Done." over a broken serve.
+if [ "$code" != "200" ]; then
+  echo "ERROR: origin is not serving (expected 200, got ${code:-no response})" >&2
+  exit 1
+fi
 echo "public site:   HTTP $(curl -sS -o /dev/null -w '%{http_code}' -m 15 https://forrest.rainierserver.com/ || true)"
 (cd "$RUNNER_DIR" && sudo ./svc.sh status || true)
 

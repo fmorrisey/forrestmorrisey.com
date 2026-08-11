@@ -32,6 +32,13 @@ jobs:
         working-directory: apps/site
         run: npm ci
 
+      # tsc needs .astro/types.d.ts to resolve the `astro:content` import in
+      # src/content.config.ts. That directory is gitignored and generated, so
+      # on a clean checkout typecheck fails with TS2307 unless we sync first.
+      - name: Generate content types
+        working-directory: apps/site
+        run: npx astro sync
+
       - name: Typecheck
         working-directory: apps/site
         run: npm run typecheck

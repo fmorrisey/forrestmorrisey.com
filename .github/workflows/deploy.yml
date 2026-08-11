@@ -11,18 +11,27 @@ on:
     branches: ["main"]
   workflow_dispatch:
 
+# Never cancel a deploy mid-flight: the publish step rsyncs --delete into the
+# live web root, and killing it there leaves the site in a mixed state until
+# the next run finishes. Queue instead.
 concurrency:
   group: forrest-site-deploy
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   deploy:
     runs-on: [self-hosted, rainier]
+    permissions:
+      contents: read
     env:
       WEB_ROOT: /srv/www/forrestmorrisey.com
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          # This runner is on the home network and npm lifecycle scripts run
+          # here; don't leave a credential in .git/config for them to find.
+          persist-credentials: false
 
       - uses: actions/setup-node@v4
         with:
@@ -33,6 +42,14 @@ jobs:
       - name: Install
         working-directory: apps/site
         run: npm ci
+
+      # Required, not just belt-and-braces: tsc needs .astro/types.d.ts for the
+      # `astro:content` import, and actions/checkout runs `git clean -ffdx`,
+      # which wipes that gitignored directory from any previous run on this
+      # persistent runner. Without this the deploy can never reach Publish.
+      - name: Generate content types
+        working-directory: apps/site
+        run: npx astro sync
 
       - name: Typecheck
         working-directory: apps/site
