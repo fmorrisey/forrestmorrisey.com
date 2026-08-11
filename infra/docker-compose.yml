@@ -9,4 +9,7 @@ services:
       - "127.0.0.1:8090:8090"
     volumes:
       - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
-      - ../apps/site/dist:/srv:ro
+      # Served content is the deploy web root on the host, written by the
+      # self-hosted runner (see .github/workflows/deploy.yml). Deliberately not
+      # the git working copy -- production must not depend on a local build.
+      - /srv/www/forrestmorrisey.com:/srv:ro

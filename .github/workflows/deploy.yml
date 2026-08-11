@@ -1,0 +1,67 @@
+name: Build & Deploy (forrest.rainierserver.com)
+
+# Runs on the self-hosted runner on Rainier, so the build and the web root are
+# on the same machine -- no SSH, no secrets, no inbound ports.
+#
+# SECURITY: this repo is public. Never add a `pull_request` trigger here.
+# A fork's PR would execute arbitrary code on the runner inside the home
+# network. `push` to main and manual dispatch both require write access.
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+concurrency:
+  group: forrest-site-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, rainier]
+    env:
+      WEB_ROOT: /srv/www/forrestmorrisey.com
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: apps/site/package-lock.json
+
+      - name: Install
+        working-directory: apps/site
+        run: npm ci
+
+      - name: Typecheck
+        working-directory: apps/site
+        run: npm run typecheck
+
+      - name: Build
+        working-directory: apps/site
+        run: npm run build
+
+      # rsync --delete would happily empty the live site if a build silently
+      # produced nothing, so refuse to publish a dist that looks wrong.
+      - name: Verify build output
+        run: |
+          set -euo pipefail
+          test -s apps/site/dist/index.html
+          pages=$(find apps/site/dist -name '*.html' | wc -l)
+          echo "built $pages html pages"
+          test "$pages" -ge 10
+
+      - name: Publish to web root
+        run: |
+          set -euo pipefail
+          rsync -a --delete apps/site/dist/ "$WEB_ROOT/"
+
+      - name: Smoke test origin
+        run: |
+          set -euo pipefail
+          code=$(curl -sS -o /dev/null -w '%{http_code}' \
+            --retry 5 --retry-delay 2 --retry-all-errors \
+            http://127.0.0.1:8090/)
+          echo "origin returned $code"
+          test "$code" = "200"
