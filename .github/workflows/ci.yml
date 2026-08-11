@@ -1,0 +1,56 @@
+name: CI
+
+# Validates PRs before they can land on main. Deploy runs its own typecheck
+# and build on push, so this deliberately does not trigger on main -- that
+# would just duplicate the deploy job's work.
+on:
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+# SECURITY: must stay on ubuntu-latest, never [self-hosted, rainier].
+# This repo is public and this workflow has a pull_request trigger, so a fork's
+# PR runs here before any review. On the self-hosted runner that would mean
+# arbitrary code executing on a machine inside the home network. Branch
+# protection does not prevent this -- fork PRs never touch main.
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: apps/site/package-lock.json
+
+      - name: Install
+        working-directory: apps/site
+        run: npm ci
+
+      - name: Typecheck
+        working-directory: apps/site
+        run: npm run typecheck
+
+      - name: Build
+        working-directory: apps/site
+        run: npm run build
+
+      # Same guard the deploy workflow applies, so a content or routing
+      # regression surfaces in review rather than at publish time.
+      - name: Verify build output
+        working-directory: apps/site
+        run: |
+          set -euo pipefail
+          test -s dist/index.html
+          pages=$(find dist -name '*.html' | wc -l)
+          echo "built $pages html pages"
+          test "$pages" -ge 10
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
