@@ -1,6 +1,10 @@
 :8090 {
   root * /srv
 
+  # Named matchers must be declared at site level, not inside the `route` block
+  # that uses them.
+  @portfolio_item path_regexp portfolio_item ^/portfolio/(.*)$
+
   # Legacy Squarespace URLs -> new routes.
   #
   # Wrapped in `route` so these are evaluated in the order written: the two
@@ -15,7 +19,7 @@
 
     redir /services /contact/ permanent
     redir /social-feeds /social/ permanent
-    redir /projects /portfolio/ permanent
+    redir /projects /software/ permanent
     redir /explore /adventures/ permanent
     redir /iat-2020 /adventures/iat-2020/ permanent
 
@@ -30,8 +34,23 @@
     # Retired Squarespace pages: "UX / UI (Copy)" was a duplicate, and
     # "New Gallery" was an empty orphan. Fold them into the nearest parent
     # rather than 404 -- a live link should still land somewhere useful.
-    redir /ux-ui-1 /portfolio/ permanent
+    redir /ux-ui-1 /software/ permanent
     redir /new-gallery-1 /photography/ permanent
+
+    # The Portfolio section became Software. Renamed before cutover, so no
+    # search engine has indexed /portfolio/* -- these exist for links already
+    # shared by hand, and for anyone who bookmarked the staging host.
+    #
+    # The capture is `(.*)` rather than `(.+)` so it also matches the bare
+    # `/portfolio/`, which is the canonical index URL under Astro's directory
+    # build format -- and therefore the likeliest one anyone actually holds. An
+    # empty capture lands on `/software/`, which is correct.
+    #
+    # Trailing slashes survive the hop (`/portfolio/spoker/` -> `/software/spoker/`),
+    # so a redirected visitor does not pay a second redirect to have Caddy put
+    # the slash back.
+    redir /portfolio /software/ permanent
+    redir @portfolio_item /software/{re.portfolio_item.1} permanent
 
     # Blog posts first, then the index, then everything else under /blog.
     redir /blog/2020/5/15/the-journey-begins /writing/the-journey-begins/ permanent

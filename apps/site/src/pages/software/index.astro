@@ -5,14 +5,14 @@ import CardGrid from "../../components/CardGrid.astro";
 import ImageTile from "../../components/ImageTile.astro";
 import { getCollection } from "astro:content";
 
-const projects = await getCollection("portfolio", ({ data }) => data.published);
+const projects = await getCollection("software", ({ data }) => data.published);
 const sortedProjects = projects.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 ---
 
-<BaseLayout title="Portfolio — Forrest Morrisey" fullWidth={true}>
-  <HeroBanner 
-    title="Projects"
-    subtitle="Software Engineer"
+<BaseLayout title="Software — Forrest Morrisey" fullWidth={true}>
+  <HeroBanner
+    title="Software"
+    subtitle="Things I've built"
     height="medium"
   />
 
@@ -79,7 +79,7 @@ const sortedProjects = projects.sort((a, b) => b.data.date.getTime() - a.data.da
         <CardGrid columns={3}>
           {sortedProjects.map(project => (
             <ImageTile 
-              href={`/portfolio/${project.slug}`}
+              href={`/software/${project.slug}`}
               image={project.data.coverImage}
               title={project.data.title}
               subtitle={project.data.role || project.data.description}

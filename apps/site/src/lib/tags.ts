@@ -1,7 +1,7 @@
 /**
  * Tag values in frontmatter are inconsistent by history: content migrated from
  * Squarespace kept its capitalised tags ("Career", "Journey", "Transition"),
- * newer content is lowercase, and portfolio entries use tech labels with spaces
+ * newer content is lowercase, and software entries use tech labels with spaces
  * and punctuation (".NET", "Full Stack", "E-Commerce").
  *
  * Slugging on the way into a URL keeps that mess out of the address bar and
@@ -24,7 +24,7 @@ export const TAGGED_COLLECTIONS = [
   "writing",
   "adventures",
   "photography",
-  "portfolio",
+  "software",
   "music",
   "youtube",
 ] as const;

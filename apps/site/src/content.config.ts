@@ -53,16 +53,20 @@ const photography = defineCollection({
   })
 });
 
-const portfolio = defineCollection({
+const software = defineCollection({
   type: "content",
   schema: z.object({
     ...base,
     role: z.string().optional(),
     tech: z.array(z.string()).default([]),
+    // `download` is for things you install rather than visit -- a .deb, a
+    // release page. Kept separate from `live` so a CLI tool is not advertised
+    // with a "View Live" button that leads somewhere there is nothing to see.
     links: z
       .object({
         repo: z.string().url().optional(),
-        live: z.string().url().optional()
+        live: z.string().url().optional(),
+        download: z.string().url().optional()
       })
       .default({}),
     gallery: z.array(z.object({ src: z.string(), alt: z.string().optional() })).default([])
@@ -90,4 +94,4 @@ const youtube = defineCollection({
   })
 });
 
-export const collections = { writing, adventures, photography, portfolio, music, youtube };
+export const collections = { writing, adventures, photography, software, music, youtube };
