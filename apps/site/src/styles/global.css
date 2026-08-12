@@ -337,6 +337,11 @@ a:hover {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: var(--space-sm);
+  /* Captions vary from nothing to ~60 words, so let each figure size to its own
+     content instead of stretching to the tallest in its row. The row is still as
+     tall as its tallest member -- a grid cannot do otherwise -- but uncaptioned
+     images no longer stretch to fill it. */
+  align-items: start;
 }
 
 .gallery-figure {
@@ -353,8 +358,9 @@ a:hover {
 }
 
 .gallery-item {
-  /* Explicit: as a figure child this <a> is no longer blockified by the grid,
-     and aspect-ratio would not apply to an inline box. */
+  /* Stated for clarity, not necessity: this <a> is a flex item of
+     .gallery-figure and so is already blockified, which is what lets
+     aspect-ratio apply. */
   display: block;
   aspect-ratio: 1;
   overflow: hidden;
