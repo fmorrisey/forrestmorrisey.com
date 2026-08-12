@@ -40,9 +40,16 @@ const formattedDate = date.toLocaleDateString('en-US', {
           <h2 class="text-center text-uppercase mb-lg">Gallery</h2>
           <div class="gallery-grid">
             {gallery.map(img => (
-              <a href={img.src} target="_blank" rel="noopener noreferrer" class="gallery-item">
-                <img src={img.src} alt={img.alt || ""} loading="lazy" />
-              </a>
+              <figure class="gallery-figure">
+                {/* Grid cells are ~280-400px, so serve the thumbnail here and
+                    keep the full-size original behind the link. Without this a
+                    full scroll of the 20-image gallery transferred ~7.3MB of
+                    pixels no cell could display. */}
+                <a href={img.src} target="_blank" rel="noopener noreferrer" class="gallery-item">
+                  <img src={img.thumb || img.src} alt={img.alt || ""} loading="lazy" />
+                </a>
+                {img.caption && <figcaption class="gallery-caption">{img.caption}</figcaption>}
+              </figure>
             ))}
           </div>
         </section>

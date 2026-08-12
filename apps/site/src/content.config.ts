@@ -26,7 +26,22 @@ const adventures = defineCollection({
   schema: z.object({
     ...base,
     location: z.string().optional(),
-    gallery: z.array(z.object({ src: z.string(), alt: z.string().optional() })).default([])
+    // `caption` is the author's own prose from the original post, shown under
+    // the image. `alt` stays a plain description for screen readers.
+    //
+    // `thumb` is the grid-sized copy. Optional and explicit rather than derived
+    // from `src`, so galleries without generated thumbnails keep working
+    // instead of requesting paths that do not exist.
+    gallery: z
+      .array(
+        z.object({
+          src: z.string(),
+          thumb: z.string().optional(),
+          alt: z.string().optional(),
+          caption: z.string().optional()
+        })
+      )
+      .default([])
   })
 });
 
