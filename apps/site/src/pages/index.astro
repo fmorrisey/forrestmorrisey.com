@@ -9,7 +9,7 @@ import { getCollection } from "astro:content";
 // Get featured items from each collection
 const adventures = await getCollection("adventures", ({ data }) => data.published && data.featured);
 const photography = await getCollection("photography", ({ data }) => data.published && data.featured);
-const portfolio = await getCollection("portfolio", ({ data }) => data.published && data.featured);
+const software = await getCollection("software", ({ data }) => data.published && data.featured);
 const writing = await getCollection("writing", ({ data }) => data.published && data.featured);
 const music = await getCollection("music", ({ data }) => data.published && data.featured);
 const youtube = await getCollection("youtube", ({ data }) => data.published && data.featured);
@@ -18,7 +18,9 @@ const youtube = await getCollection("youtube", ({ data }) => data.published && d
 const featuredItems = [
   ...adventures.map(a => ({ ...a, collection: "adventures" })),
   ...photography.map(p => ({ ...p, collection: "photography" })),
-  ...portfolio.map(p => ({ ...p, collection: "portfolio" })),
+  // This string is the URL segment on line ~97, not a label -- it has to match
+  // the route, or every featured project links to a 404.
+  ...software.map(p => ({ ...p, collection: "software" })),
   ...writing.map(w => ({ ...w, collection: "writing" })),
   ...music.map(m => ({ ...m, collection: "music" })),
   ...youtube.map(y => ({ ...y, collection: "youtube" }))
@@ -40,8 +42,8 @@ const featuredItems = [
       
       <CardGrid columns={3}>
         <ImageTile 
-          href="/portfolio"
-          title="Portfolio"
+          href="/software"
+          title="Software"
           subtitle="Projects & Work"
           ctaLabel="View"
           aspectRatio="square"
