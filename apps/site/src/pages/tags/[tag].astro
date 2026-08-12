@@ -2,24 +2,21 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import HeroBanner from "../../components/HeroBanner.astro";
 import { getCollection } from "astro:content";
-import { groupByTagSlug } from "../../lib/tags";
+import { groupByTagSlug, TAGGED_COLLECTIONS } from "../../lib/tags";
 
 export async function getStaticPaths() {
-  // Declared inside: Astro hoists getStaticPaths and runs it in its own scope,
-  // so a module-level const here would be undefined at call time.
-  //
   // Tags live on every collection's base schema, not just writing, so a tag
   // page that only listed posts would hide the adventures and galleries
   // sharing it -- `travel` and `pacific-northwest` span several collections.
-  const COLLECTIONS = ["writing", "adventures", "photography", "portfolio", "music", "youtube"] as const;
-  const pairs: Array<{ tag: string; value: any }> = [];
+  const pairs: Array<{ tag: string; value: any; key: string }> = [];
 
-  for (const name of COLLECTIONS) {
+  for (const name of TAGGED_COLLECTIONS) {
     const entries = await getCollection(name, ({ data }) => data.published);
     for (const entry of entries) {
       for (const tag of entry.data.tags) {
         pairs.push({
           tag,
+          key: `${name}/${entry.slug}`,
           value: {
             title: entry.data.title,
             href: `/${name}/${entry.slug}`,
@@ -66,7 +63,7 @@ const { tag, entries } = Astro.props;
               <div class="post-meta">
                 <span class="badge">{entry.section}</span>
                 <time class="muted">
-                  {entry.date.toLocaleDateString("en-US", { month: "long", year: "numeric" })}
+                  {entry.date.toLocaleDateString("en-US", { month: "long", year: "numeric", timeZone: "UTC" })}
                 </time>
               </div>
             </a>

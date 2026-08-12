@@ -2,16 +2,14 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import HeroBanner from "../../components/HeroBanner.astro";
 import { getCollection } from "astro:content";
-import { groupByTagSlug } from "../../lib/tags";
+import { groupByTagSlug, TAGGED_COLLECTIONS } from "../../lib/tags";
 
-const COLLECTIONS = ["writing", "adventures", "photography", "portfolio", "music", "youtube"] as const;
-
-const pairs: Array<{ tag: string; value: true }> = [];
-for (const name of COLLECTIONS) {
+const pairs: Array<{ tag: string; value: true; key: string }> = [];
+for (const name of TAGGED_COLLECTIONS) {
   const entries = await getCollection(name, ({ data }) => data.published);
   for (const entry of entries) {
     for (const tag of entry.data.tags) {
-      pairs.push({ tag, value: true });
+      pairs.push({ tag, value: true, key: `${name}/${entry.slug}` });
     }
   }
 }

@@ -19,7 +19,8 @@ const { title, heroImage, heroSubtitle, description, date, tags } = post.data;
 const formattedDate = date.toLocaleDateString('en-US', { 
   month: 'long', 
   day: 'numeric',
-  year: 'numeric' 
+  year: 'numeric',
+  timeZone: 'UTC'
 });
 ---
 
@@ -38,8 +39,15 @@ const formattedDate = date.toLocaleDateString('en-US', {
         <time class="muted">{formattedDate}</time>
         {tags.length > 0 && (
           <ul class="badge-list" style="justify-content: center; margin-top: var(--space-sm);">
+            {/* A tag of only punctuation or emoji slugs to "", which has no
+                generated page; render it as a plain label rather than a link
+                to /tags/ that silently lands on the index. */}
             {tags.map(tag => (
-              <li><a href={`/tags/${tagSlug(tag)}`} class="badge badge-link">{tag}</a></li>
+              <li>
+                {tagSlug(tag)
+                  ? <a href={`/tags/${tagSlug(tag)}`} class="badge badge-link">{tag}</a>
+                  : <span class="badge">{tag}</span>}
+              </li>
             ))}
           </ul>
         )}
