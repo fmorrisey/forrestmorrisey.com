@@ -1,0 +1,119 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import HeroBanner from "../../components/HeroBanner.astro";
+import { getCollection } from "astro:content";
+import { groupByTagSlug, TAGGED_COLLECTIONS } from "../../lib/tags";
+
+export async function getStaticPaths() {
+  // Tags live on every collection's base schema, not just writing, so a tag
+  // page that only listed posts would hide the adventures and galleries
+  // sharing it -- `travel` and `pacific-northwest` span several collections.
+  const pairs: Array<{ tag: string; value: any; key: string }> = [];
+
+  for (const name of TAGGED_COLLECTIONS) {
+    const entries = await getCollection(name, ({ data }) => data.published);
+    for (const entry of entries) {
+      for (const tag of entry.data.tags) {
+        pairs.push({
+          tag,
+          key: `${name}/${entry.slug}`,
+          value: {
+            title: entry.data.title,
+            href: `/${name}/${entry.slug}`,
+            section: name,
+            summary: entry.data.summary || entry.data.description || "",
+            date: entry.data.date,
+          },
+        });
+      }
+    }
+  }
+
+  return [...groupByTagSlug(pairs).entries()].map(([slug, { label, values }]) => ({
+    params: { tag: slug },
+    props: {
+      tag: label,
+      entries: values.sort((a, b) => b.date.getTime() - a.date.getTime()),
+    },
+  }));
+}
+
+const { tag, entries } = Astro.props;
+---
+
+<BaseLayout
+  title={`${tag} — Forrest Morrisey`}
+  description={`Everything tagged ${tag}`}
+  fullWidth={true}
+>
+  <HeroBanner title={tag} subtitle={`${entries.length} ${entries.length === 1 ? "entry" : "entries"}`} height="medium" />
+
+  <section class="section">
+    <div class="container">
+      <p class="text-center mb-lg">
+        <a href="/tags" class="btn btn-outline btn-pill">← All tags</a>
+      </p>
+
+      <div class="posts-list">
+        {entries.map((entry: any) => (
+          <article class="post-card card card-hover">
+            <a href={entry.href} class="post-link">
+              <h2 class="post-title">{entry.title}</h2>
+              {entry.summary ? <p class="post-excerpt muted">{entry.summary}</p> : null}
+              <div class="post-meta">
+                <span class="badge">{entry.section}</span>
+                <time class="muted">
+                  {entry.date.toLocaleDateString("en-US", { month: "long", year: "numeric", timeZone: "UTC" })}
+                </time>
+              </div>
+            </a>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .post-card {
+    transition: border-color 0.2s;
+  }
+
+  .post-card:hover {
+    border-color: var(--accent);
+  }
+
+  .post-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .post-title {
+    font-size: 1.25rem;
+    margin: 0 0 8px;
+    color: var(--fg);
+  }
+
+  .post-excerpt {
+    margin: 0 0 12px;
+    line-height: 1.6;
+  }
+
+  .post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    align-items: center;
+  }
+
+  .post-meta time {
+    font-size: 0.85rem;
+  }
+</style>

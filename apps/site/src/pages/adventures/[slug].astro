@@ -17,7 +17,8 @@ const { title, heroImage, heroSubtitle, location, date, gallery } = adventure.da
 
 const formattedDate = date.toLocaleDateString('en-US', { 
   month: 'long', 
-  year: 'numeric' 
+  year: 'numeric',
+  timeZone: 'UTC'
 });
 ---
 
