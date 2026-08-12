@@ -29,7 +29,9 @@ async function run(originBehavior, pagesBehavior = pagesOk) {
     return url.startsWith(FALLBACK) ? pagesBehavior() : originBehavior();
   };
   try {
-    return await worker.fetch(new Request("https://forrestmorrisey.com/writing/"));
+    return await worker.fetch(
+      new Request("https://forrest.rainierserver.com/writing/")
+    );
   } finally {
     globalThis.fetch = realFetch;
   }

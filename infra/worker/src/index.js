@@ -1,5 +1,9 @@
 /**
- * Origin failover for forrestmorrisey.com.
+ * Origin failover for the self-hosted site.
+ *
+ * Fronts forrest.rainierserver.com today; forrestmorrisey.com is still served
+ * by Squarespace and must not be routed through here until cutover. See
+ * wrangler.toml.
  *
  * The site is served from a single origin (Rainier) over a Cloudflare Tunnel.
  * When that origin is unreachable, Cloudflare's own error page (1033 / 52x) is

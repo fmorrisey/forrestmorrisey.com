@@ -1,11 +1,17 @@
 # Infrastructure
 
-forrestmorrisey.com is served from a single origin — Rainier — reached over a
-Cloudflare Tunnel.
+The Astro site is served from a single origin — Rainier — reached over a
+Cloudflare Tunnel, and lives at **forrest.rainierserver.com**.
+
+**forrestmorrisey.com is still served by Squarespace** and stays that way until
+cutover, which is deliberately the last step of the migration. Nothing in this
+directory should route, link to, or depend on the Squarespace site.
 
 ```
 Browser → Cloudflare → Tunnel → cloudflared (host) → :8090 Caddy → /srv/www/forrestmorrisey.com
 ```
+
+(The web root is named for the final domain; the host serving it today is not.)
 
 | Path | What it is |
 |---|---|
@@ -92,9 +98,10 @@ Worker has that hostname hardcoded as `FALLBACK_ORIGIN`. Naming the project
 `forrestmorrisey-fallback` matches what is already in the code. Any other name
 means updating `worker/src/index.js` to match.
 
-Do **not** put the fallback on a subdomain of `forrestmorrisey.com`. The Worker
-route covers the whole zone, so fetching the fallback through that zone would
-loop back through the failover path it is meant to escape.
+Do **not** put the fallback on a hostname this Worker fronts. The route covers
+`forrest.rainierserver.com/*`, so serving the fallback from there would loop it
+back through the failover path it exists to escape. A `*.pages.dev` host is
+outside every route here, which is why it is the default.
 
 ### 2. Worker → Cloudflare Workers
 
@@ -103,10 +110,23 @@ cd infra/worker
 npx wrangler deploy
 ```
 
-`wrangler.toml` binds the Worker to `forrestmorrisey.com/*` and
-`www.forrestmorrisey.com/*`. Confirm the `www` route matches how the zone is
-actually set up — if `www` is a redirect rather than a served hostname, that
-second route is harmless but pointless.
+`wrangler.toml` binds the Worker to `forrest.rainierserver.com/*` — the host
+that actually serves the Astro site.
+
+**It is deliberately not bound to `forrestmorrisey.com`.** That domain is still
+Squarespace's until cutover; a route there today would put this Worker in front
+of the live Squarespace site, measure Squarespace's health, and serve a page
+claiming a self-hosted server the visitor never touched is down.
+
+## On cutover day
+
+When forrestmorrisey.com moves to Rainier, uncomment the apex and `www` routes
+in `wrangler.toml` and redeploy. Confirm first that `www` is actually a served
+hostname rather than a redirect — if it redirects, that second route is harmless
+but pointless.
+
+Nothing in the fallback page needs to change: its copy is domain-neutral for
+exactly this reason.
 
 ## Verifying it works
 
@@ -119,7 +139,7 @@ The honest test is an actual outage, which you can stage safely:
 3. Load the site. Expect the branded page, HTTP 503, and
    `x-fallback: origin-unreachable`:
    ```bash
-   curl -sI https://forrestmorrisey.com/ | head -20
+   curl -sI https://forrest.rainierserver.com/ | head -20
    ```
 4. Start the origin again. The next request should reach the real site with no
    intervention — no cache purge, no redeploy. If it does not, the `no-store`
