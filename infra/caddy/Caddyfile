@@ -1,5 +1,49 @@
 :8090 {
   root * /srv
+
+  # Legacy Squarespace URLs -> new routes.
+  #
+  # Wrapped in `route` so these are evaluated in the order written: the two
+  # specific /blog/<date>/<slug> post redirects must be tried before the
+  # /blog/* catch-all, or every post would land on the writing index.
+  #
+  # 301 (permanent) rather than 302: these moves are final, and search engines
+  # should transfer ranking to the new URLs. Verified list -- every path below
+  # currently 404s on the new site.
+  route {
+    redir /home / permanent
+
+    redir /services /contact/ permanent
+    redir /social-feeds /social/ permanent
+    redir /projects /portfolio/ permanent
+    redir /explore /adventures/ permanent
+    redir /iat-2020 /adventures/iat-2020/ permanent
+
+    # /browse and /photos were two Squarespace entry points to the same gallery
+    # landing; they collapse into one route here.
+    redir /browse /photography/ permanent
+    redir /photos /photography/ permanent
+    redir /portraits /photography/portraits/ permanent
+    redir /climatestrike /photography/climate-strike/ permanent
+    redir /latest /photography/highlights/ permanent
+
+    # Retired Squarespace pages: "UX / UI (Copy)" was a duplicate, and
+    # "New Gallery" was an empty orphan. Fold them into the nearest parent
+    # rather than 404 -- a live link should still land somewhere useful.
+    redir /ux-ui-1 /portfolio/ permanent
+    redir /new-gallery-1 /photography/ permanent
+
+    # Blog posts first, then the index, then everything else under /blog.
+    redir /blog/2020/5/15/the-journey-begins /writing/the-journey-begins/ permanent
+    redir /blog/2020/9/2/printhello-world /writing/print-hello-world/ permanent
+    redir /blog /writing/ permanent
+
+    # Catch-all for /blog/tag/* and /blog/category/*. Temporary: it sends
+    # taxonomy URLs to the writing index because the tag routes do not exist
+    # yet. Point these at the real tag pages once #17 lands.
+    redir /blog/* /writing/ permanent
+  }
+
   file_server
   encode gzip zstd
 
