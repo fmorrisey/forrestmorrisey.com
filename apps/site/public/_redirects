@@ -1,0 +1,47 @@
+# Cloudflare Pages redirect rules. Ported from infra/caddy/Caddyfile when the
+# site moved off the Rainier origin -- see infra/README.md.
+#
+# ORDER MATTERS: first match wins, exactly as the Caddy `route` block worked.
+# The two specific /blog/<date>/<slug> posts must stay above the /blog/*
+# catch-all, or every post lands on the writing index instead of itself.
+#
+# 301 rather than 302 throughout: these moves are final, and search engines
+# should transfer ranking to the new URLs.
+
+# Legacy Squarespace URLs -> new routes.
+/home                                 /                              301
+/services                             /contact/                      301
+/social-feeds                         /social/                       301
+/projects                             /software/                     301
+/explore                              /adventures/                   301
+/iat-2020                             /adventures/iat-2020/          301
+
+# /browse and /photos were two Squarespace entry points to the same gallery
+# landing; they collapse into one route here.
+/browse                               /photography/                  301
+/photos                               /photography/                  301
+/portraits                            /photography/portraits/        301
+/climatestrike                        /photography/climate-strike/   301
+/latest                               /photography/highlights/       301
+
+# Retired Squarespace pages: "UX / UI (Copy)" was a duplicate, and "New Gallery"
+# was an empty orphan. Fold them into the nearest parent rather than 404 -- a
+# live link should still land somewhere useful.
+/ux-ui-1                              /software/                     301
+/new-gallery-1                        /photography/                  301
+
+# The Portfolio section became Software. The bare /portfolio has no trailing
+# segment for the splat, so it needs its own line above the wildcard --
+# the same trap that the Caddy version hit with `(.+)` vs `(.*)`.
+/portfolio                            /software/                     301
+/portfolio/*                          /software/:splat               301
+
+# Blog posts first, then the index, then everything else under /blog.
+/blog/2020/5/15/the-journey-begins    /writing/the-journey-begins/   301
+/blog/2020/9/2/printhello-world       /writing/print-hello-world/    301
+/blog                                 /writing/                      301
+
+# Catch-all for /blog/tag/* and /blog/category/*. Temporary: it sends taxonomy
+# URLs to the writing index. Point these at the real tag pages -- #17 has landed,
+# so /tags/<tag>/ now exists and this could be made precise.
+/blog/*                               /writing/                      301

@@ -1,0 +1,18 @@
+# Cloudflare Pages response headers. Ported from the Caddyfile's cache rules.
+
+# Astro's own output is content-hashed -- a changed file gets a changed URL --
+# so it can be cached hard and forever with no way to serve a stale copy.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Hand-managed images are a different case, and this deliberately diverges from
+# what Caddy did.
+#
+# Caddy served these `immutable` for a year alongside /_astro/*, but these paths
+# carry no content hash: replacing a hero at the same filename is exactly how
+# this repo swaps art. Under `immutable`, returning visitors would keep the old
+# image for up to a year with no way to force a refetch short of renaming the
+# file. A day of caching plus a week of stale-while-revalidate keeps images
+# effectively free to serve while letting a swap actually reach people.
+/assets/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800

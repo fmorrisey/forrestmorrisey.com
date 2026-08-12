@@ -1,36 +1,36 @@
-name: Build & Deploy (forrest.rainierserver.com)
+name: Build & Deploy (Cloudflare Pages)
 
-# Runs on the self-hosted runner on Rainier, so the build and the web root are
-# on the same machine -- no SSH, no secrets, no inbound ports.
+# Builds on a GitHub-hosted runner and publishes to Cloudflare Pages.
 #
-# SECURITY: this repo is public. Never add a `pull_request` trigger here.
-# A fork's PR would execute arbitrary code on the runner inside the home
-# network. `push` to main and manual dispatch both require write access.
+# This used to build on a self-hosted runner on Rainier and rsync into a local
+# web root. Both halves lived in the same house, which meant an offline Rainier
+# took down serving AND the ability to deploy a fix -- the failure mode that
+# retired the arrangement. Nothing about this site needs an origin: it is fully
+# static.
+#
+# SECURITY: this repo is public. Never add a `pull_request` trigger here. A
+# fork's PR would run with access to the Cloudflare deploy token below. `push`
+# to main and manual dispatch both require write access.
 on:
   push:
     branches: ["main"]
   workflow_dispatch:
 
-# Never cancel a deploy mid-flight: the publish step rsyncs --delete into the
-# live web root, and killing it there leaves the site in a mixed state until
-# the next run finishes. Queue instead.
+# Never cancel a deploy mid-flight: Pages publishes a whole directory as one
+# atomic deployment, and a killed upload just wastes a build slot. Queue instead.
 concurrency:
   group: forrest-site-deploy
   cancel-in-progress: false
 
 jobs:
   deploy:
-    runs-on: [self-hosted, rainier]
+    runs-on: ubuntu-latest
     permissions:
       contents: read
-    env:
-      WEB_ROOT: /srv/www/forrestmorrisey.com
 
     steps:
       - uses: actions/checkout@v4
         with:
-          # This runner is on the home network and npm lifecycle scripts run
-          # here; don't leave a credential in .git/config for them to find.
           persist-credentials: false
 
       - uses: actions/setup-node@v4
@@ -43,10 +43,8 @@ jobs:
         working-directory: apps/site
         run: npm ci
 
-      # Required, not just belt-and-braces: tsc needs .astro/types.d.ts for the
-      # `astro:content` import, and actions/checkout runs `git clean -ffdx`,
-      # which wipes that gitignored directory from any previous run on this
-      # persistent runner. Without this the deploy can never reach Publish.
+      # Required: tsc needs .astro/types.d.ts for the `astro:content` import,
+      # and it is gitignored, so a fresh runner never has it.
       - name: Generate content types
         working-directory: apps/site
         run: npx astro sync
@@ -59,26 +57,50 @@ jobs:
         working-directory: apps/site
         run: npm run build
 
-      # rsync --delete would happily empty the live site if a build silently
-      # produced nothing, so refuse to publish a dist that looks wrong.
+      # A Pages deployment replaces the live site wholesale, so refuse to
+      # publish a dist that looks wrong. The floor is deliberately low -- it is
+      # here to catch "the build produced almost nothing", not to track the
+      # real page count, which would turn every content change into a chore.
+      #
+      # The _redirects and _headers checks matter because Pages fails these
+      # SILENTLY: a missing file means no legacy redirect works and no cache
+      # header is set, with a perfectly healthy-looking green deploy.
       - name: Verify build output
         run: |
           set -euo pipefail
           test -s apps/site/dist/index.html
+          test -s apps/site/dist/_redirects
+          test -s apps/site/dist/_headers
           pages=$(find apps/site/dist -name '*.html' | wc -l)
           echo "built $pages html pages"
           test "$pages" -ge 10
 
-      - name: Publish to web root
-        run: |
-          set -euo pipefail
-          rsync -a --delete apps/site/dist/ "$WEB_ROOT/"
+      # Pinned to a major version rather than `@latest`: a deploy step that
+      # silently changes under you is the one thing worse than a manual deploy.
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy apps/site/dist --project-name=forrestmorrisey-site
 
-      - name: Smoke test origin
+      # Pages serves the custom domain from the production deployment, so a
+      # green upload is not proof the site is actually up. Hit the real
+      # hostname, and check a redirect too -- _redirects failing to apply is
+      # invisible on the homepage.
+      - name: Smoke test the live site
         run: |
           set -euo pipefail
           code=$(curl -sS -o /dev/null -w '%{http_code}' \
-            --retry 5 --retry-delay 2 --retry-all-errors \
-            http://127.0.0.1:8090/)
-          echo "origin returned $code"
+            --retry 5 --retry-delay 5 --retry-all-errors \
+            https://forrest.rainierserver.com/)
+          echo "homepage returned $code"
           test "$code" = "200"
+
+          location=$(curl -sS -o /dev/null -w '%{redirect_url}' \
+            https://forrest.rainierserver.com/portfolio)
+          echo "/portfolio redirects to $location"
+          case "$location" in
+            */software/) ;;
+            *) echo "redirects are not being applied"; exit 1 ;;
+          esac
