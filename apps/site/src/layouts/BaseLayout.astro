@@ -1,6 +1,7 @@
 ---
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
+import { FEEDS } from "../lib/feeds";
 import "../styles/global.css";
 
 interface Props {
@@ -29,6 +30,14 @@ const canonicalURL = new URL(currentPath, Astro.site);
     <title>{title}</title>
     {description ? <meta name="description" content={description} /> : null}
     <link rel="canonical" href={canonicalURL.href} />
+    {/* Advertised on every page rather than only on the two collections they
+        cover: a reader's "find the feed" button looks at whatever page the
+        visitor happens to be on, and there is no page here where offering the
+        writing and adventures feeds would be wrong. Both are titled, since a
+        bare pair of alternates gives the reader nothing to choose between. */}
+    {Object.values(FEEDS).map(feed => (
+      <link rel="alternate" type="application/rss+xml" title={feed.title} href={new URL(feed.path, Astro.site).href} />
+    ))}
   </head>
   <body>
     <SiteHeader currentPath={currentPath} />
