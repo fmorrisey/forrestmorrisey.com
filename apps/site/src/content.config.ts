@@ -57,6 +57,10 @@ const software = defineCollection({
   type: "content",
   schema: z.object({
     ...base,
+    // Splits the index into "Professional Work" and "Personal Projects".
+    // Defaults to personal so an entry has to opt in to claiming employment --
+    // the direction where a wrong default would misrepresent something.
+    category: z.enum(["professional", "personal"]).default("personal"),
     role: z.string().optional(),
     tech: z.array(z.string()).default([]),
     // `download` is for things you install rather than visit -- a .deb, a
