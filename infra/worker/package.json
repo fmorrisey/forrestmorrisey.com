@@ -1,0 +1,11 @@
+{
+  "name": "forrestmorrisey-failover",
+  "private": true,
+  "type": "module",
+  "description": "Cloudflare Worker that serves a branded fallback page when the Rainier origin is unreachable.",
+  "scripts": {
+    "test": "node --test",
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev"
+  }
+}

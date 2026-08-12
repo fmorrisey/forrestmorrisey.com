@@ -1,0 +1,16 @@
+name = "forrestmorrisey-failover"
+main = "src/index.js"
+compatibility_date = "2026-08-12"
+
+# The Worker must sit in front of every path, not just the root: an outage
+# takes down /writing, /photography and the assets alongside the homepage.
+#
+# `zone_name` keeps this readable rather than pinning a zone ID that means
+# nothing to whoever reads it next.
+[[routes]]
+pattern = "forrestmorrisey.com/*"
+zone_name = "forrestmorrisey.com"
+
+[[routes]]
+pattern = "www.forrestmorrisey.com/*"
+zone_name = "forrestmorrisey.com"
