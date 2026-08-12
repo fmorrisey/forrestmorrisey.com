@@ -1,0 +1,30 @@
+name = "forrestmorrisey-failover"
+main = "src/index.js"
+compatibility_date = "2026-08-12"
+
+# Bound to the staging host, not the apex domain, and that is the whole point:
+# forrestmorrisey.com is still served by Squarespace until cutover. A route on
+# the apex today would put this Worker in front of Squarespace, health-check
+# Squarespace's origin, and fail over to a page announcing that a self-hosted
+# server the visitor never reached is down.
+#
+# forrest.rainierserver.com is where the Astro site actually lives
+# (.github/workflows/deploy.yml, and the cloudflared ingress -> :8090 Caddy).
+#
+# The Worker must cover every path, not just the root: an outage takes down
+# /writing and the assets alongside the homepage.
+[[routes]]
+pattern = "forrest.rainierserver.com/*"
+zone_name = "rainierserver.com"
+
+# ON CUTOVER DAY -- once forrestmorrisey.com is served by Rainier rather than
+# Squarespace, uncomment these. Adding them before the DNS move would intercept
+# the live Squarespace site.
+#
+# [[routes]]
+# pattern = "forrestmorrisey.com/*"
+# zone_name = "forrestmorrisey.com"
+#
+# [[routes]]
+# pattern = "www.forrestmorrisey.com/*"
+# zone_name = "forrestmorrisey.com"
