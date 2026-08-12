@@ -10,7 +10,11 @@ const sortedProjects = projects.sort((a, b) => b.data.date.getTime() - a.data.da
 ---
 
 <BaseLayout title="Software — Forrest Morrisey" fullWidth={true}>
+  {/* Each major section gets its own hero so they read as distinct places
+      rather than one template with the heading swapped. Section heroes live in
+      /assets/images/heroes/ named for their route. */}
   <HeroBanner
+    image="/assets/images/heroes/software.webp"
     title="Software"
     subtitle="Things I've built"
     height="medium"
