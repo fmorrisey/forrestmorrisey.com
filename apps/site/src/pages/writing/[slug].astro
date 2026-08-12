@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import HeroBanner from "../../components/HeroBanner.astro";
 import { getCollection, render } from "astro:content";
+import { tagSlug } from "../../lib/tags";
 
 export async function getStaticPaths() {
   const posts = await getCollection("writing", ({ data }) => data.published);
@@ -37,7 +38,9 @@ const formattedDate = date.toLocaleDateString('en-US', {
         <time class="muted">{formattedDate}</time>
         {tags.length > 0 && (
           <ul class="badge-list" style="justify-content: center; margin-top: var(--space-sm);">
-            {tags.map(tag => <li class="badge">{tag}</li>)}
+            {tags.map(tag => (
+              <li><a href={`/tags/${tagSlug(tag)}`} class="badge badge-link">{tag}</a></li>
+            ))}
           </ul>
         )}
       </div>

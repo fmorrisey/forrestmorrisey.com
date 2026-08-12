@@ -383,6 +383,16 @@ a:hover {
   color: var(--muted);
 }
 
+/* Badges are usually inert labels; this variant is a real link to a tag page. */
+.badge-link {
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.badge-link:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 /* ==========================================================================
    Form Styles
    ========================================================================== */
