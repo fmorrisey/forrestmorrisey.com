@@ -339,7 +339,23 @@ a:hover {
   gap: var(--space-sm);
 }
 
+.gallery-figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.gallery-caption {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
 .gallery-item {
+  /* Explicit: as a figure child this <a> is no longer blockified by the grid,
+     and aspect-ratio would not apply to an inline box. */
+  display: block;
   aspect-ratio: 1;
   overflow: hidden;
   border-radius: 8px;

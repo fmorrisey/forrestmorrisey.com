@@ -26,7 +26,17 @@ const adventures = defineCollection({
   schema: z.object({
     ...base,
     location: z.string().optional(),
-    gallery: z.array(z.object({ src: z.string(), alt: z.string().optional() })).default([])
+    // `caption` is the author's own prose from the original post, shown under
+    // the image. `alt` stays a plain description for screen readers.
+    gallery: z
+      .array(
+        z.object({
+          src: z.string(),
+          alt: z.string().optional(),
+          caption: z.string().optional()
+        })
+      )
+      .default([])
   })
 });
 

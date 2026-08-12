@@ -40,9 +40,12 @@ const formattedDate = date.toLocaleDateString('en-US', {
           <h2 class="text-center text-uppercase mb-lg">Gallery</h2>
           <div class="gallery-grid">
             {gallery.map(img => (
-              <a href={img.src} target="_blank" rel="noopener noreferrer" class="gallery-item">
-                <img src={img.src} alt={img.alt || ""} loading="lazy" />
-              </a>
+              <figure class="gallery-figure">
+                <a href={img.src} target="_blank" rel="noopener noreferrer" class="gallery-item">
+                  <img src={img.src} alt={img.alt || ""} loading="lazy" />
+                </a>
+                {img.caption && <figcaption class="gallery-caption">{img.caption}</figcaption>}
+              </figure>
             ))}
           </div>
         </section>
