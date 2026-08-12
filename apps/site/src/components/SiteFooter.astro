@@ -1,4 +1,6 @@
 ---
+import { FEEDS } from "../lib/feeds";
+
 const year = new Date().getFullYear();
 ---
 
@@ -6,7 +8,16 @@ const year = new Date().getFullYear();
   <div class="footer-inner">
     <!-- Only entry point to /tags outside individual writing posts: the header
          nav is per-section, and the other collections don't render their tags. -->
-    <p class="footer-links"><a href="/tags">Browse by tag</a></p>
+    <!-- The rel=alternate autodiscovery tags in BaseLayout only reach visitors
+         whose browser or reader surfaces them; most no longer do. These links
+         are the only way someone can see the feeds exist. -->
+    <p class="footer-links">
+      <a href="/tags">Browse by tag</a>
+      <span class="sep" aria-hidden="true">·</span>
+      <a href={FEEDS.writing.path}>Writing RSS</a>
+      <span class="sep" aria-hidden="true">·</span>
+      <a href={FEEDS.adventures.path}>Adventures RSS</a>
+    </p>
     <p class="copyright">© {year} Forrest Morrisey</p>
     <p class="signature">Built with intention. Designed for impact.</p>
     <p class="hosted">Self-Hosted on <a href="https://rainierserver.com/">Rainier Server</a> 🏔</p>
@@ -29,6 +40,11 @@ const year = new Date().getFullYear();
   .footer-links {
     font-size: 0.85rem;
     margin: 0 0 12px;
+  }
+
+  .footer-links .sep {
+    color: var(--muted);
+    margin: 0 8px;
   }
 
   .copyright {
