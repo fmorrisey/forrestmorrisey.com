@@ -7,6 +7,12 @@ import { getCollection } from "astro:content";
 
 const projects = await getCollection("software", ({ data }) => data.published);
 const sortedProjects = projects.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+// Shipped-at-work and built-for-myself are different claims, and a recruiter
+// reads them differently. Splitting them means neither has to be qualified in
+// prose on every card.
+const professional = sortedProjects.filter(p => p.data.category === "professional");
+const personal = sortedProjects.filter(p => p.data.category !== "professional");
 ---
 
 <BaseLayout title="Software — Forrest Morrisey" fullWidth={true}>
@@ -76,13 +82,39 @@ const sortedProjects = projects.sort((a, b) => b.data.date.getTime() - a.data.da
     </div>
   </section>
 
+  {/* Professional first: it is the strongest claim on the page, and a visitor
+      who reads only the top of it should hit shipped work rather than side
+      projects. Rendered only when it has entries, so the heading never sits
+      above an empty grid. */}
+  {professional.length > 0 && (
+    <section class="section">
+      <div class="container-wide">
+        <h2 class="text-center text-uppercase" style="margin-bottom: var(--space-lg);">Professional Work</h2>
+        <CardGrid columns={3}>
+          {professional.map(project => (
+            <ImageTile
+              href={`/software/${project.slug}`}
+              image={project.data.coverImage}
+              title={project.data.title}
+              subtitle={project.data.role || project.data.description}
+              ctaLabel="View Project"
+              aspectRatio="landscape"
+            />
+          ))}
+        </CardGrid>
+      </div>
+    </section>
+  )}
+
   <section class="section">
     <div class="container-wide">
-      <h2 class="text-center text-uppercase" style="margin-bottom: var(--space-lg);">Projects</h2>
-      {sortedProjects.length > 0 ? (
+      <h2 class="text-center text-uppercase" style="margin-bottom: var(--space-lg);">
+        {professional.length > 0 ? "Personal Projects" : "Projects"}
+      </h2>
+      {personal.length > 0 ? (
         <CardGrid columns={3}>
-          {sortedProjects.map(project => (
-            <ImageTile 
+          {personal.map(project => (
+            <ImageTile
               href={`/software/${project.slug}`}
               image={project.data.coverImage}
               title={project.data.title}
