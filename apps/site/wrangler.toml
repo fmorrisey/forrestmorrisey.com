@@ -23,8 +23,8 @@ directory = "./dist"
 # local Workers runtime: `/software/` serves its index.html, and `/software`
 # 307s to the trailing-slash form rather than 404ing.
 #
-# `not_found_handling` is deliberately left at its default. Setting it to
-# "404-page" would point at a /404.html this site does not build, and
-# "single-page-application" would serve the homepage for every dead URL --
-# turning genuine 404s into soft-200s that search engines index as duplicates
-# of the front page.
+# Serves src/pages/404.astro, built to dist/404.html, and still with a 404
+# status. Deliberately not "single-page-application", which would return the
+# homepage for every dead URL -- soft-200s that search engines index as
+# duplicates of the front page.
+not_found_handling = "404-page"

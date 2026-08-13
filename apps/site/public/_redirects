@@ -30,6 +30,12 @@
 /ux-ui-1                              /software/                     301
 /new-gallery-1                        /photography/                  301
 
+# Squarespace had a site search; this site has none. /tags is the nearest
+# equivalent -- one page listing every subject across all collections -- and is
+# a better landing than the homepage for someone who arrived wanting to find
+# something specific.
+/search                               /tags/                         301
+
 # The Portfolio section became Software. The bare /portfolio has no trailing
 # segment for the splat, so it needs its own line above the wildcard --
 # the same trap that the Caddy version hit with `(.+)` vs `(.*)`.
