@@ -1,10 +1,17 @@
 name: CI
 
-# Validates PRs before they can land on main. Deploy runs its own typecheck
-# and build on push, so this deliberately does not trigger on main -- that
-# would just duplicate the deploy job's work.
+# Validates PRs before they can land on main, and re-checks main itself.
+#
+# It used to skip main because the deploy workflow rebuilt everything there.
+# Cloudflare Pages now builds and deploys straight from the repo, and its build
+# does not run these checks -- so without a main trigger, anything that reached
+# main unreviewed would go live unverified. Cloudflare deploys regardless of
+# this workflow's result; requiring the check in branch protection is what makes
+# it a gate rather than a report.
 on:
   pull_request:
+    branches: ["main"]
+  push:
     branches: ["main"]
   workflow_dispatch:
 
@@ -47,13 +54,20 @@ jobs:
         working-directory: apps/site
         run: npm run build
 
-      # Same guard the deploy workflow applies, so a content or routing
-      # regression surfaces in review rather than at publish time.
+      # The only place these are checked now that Cloudflare owns deploys.
+      #
+      # _redirects and _headers matter most: Pages fails them SILENTLY. If they
+      # do not reach dist, every legacy Squarespace URL 404s and no cache header
+      # is set, behind a deploy that reports success. They live in public/ and
+      # are copied by the build, so a change there can drop them without
+      # touching anything that looks related.
       - name: Verify build output
         working-directory: apps/site
         run: |
           set -euo pipefail
           test -s dist/index.html
+          test -s dist/_redirects
+          test -s dist/_headers
           pages=$(find dist -name '*.html' | wc -l)
           echo "built $pages html pages"
           test "$pages" -ge 10
