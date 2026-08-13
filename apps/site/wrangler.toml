@@ -1,0 +1,30 @@
+# Deploy configuration for Cloudflare Workers Builds.
+#
+# This site is connected to Cloudflare as a Worker with static assets rather
+# than a classic Pages project -- Cloudflare has folded Pages into Workers, and
+# the "import a repository" flow creates a Worker. The practical difference for
+# this repo: the build output directory is declared HERE, not in the dashboard,
+# which is why the Workers Builds UI offers no output-directory field.
+#
+# There is deliberately no `main`: nothing here needs a Worker script. Requests
+# are served straight from the built assets. `wrangler deploy --dry-run`
+# confirms this is valid -- it reads the asset directory and reports no
+# bindings.
+name = "forrestmorrisey-site"
+compatibility_date = "2026-08-13"
+
+[assets]
+# Relative to this file. The dashboard's root directory must be `apps/site`,
+# which is what makes this resolve to apps/site/dist.
+directory = "./dist"
+
+# Directory-index serving is handled by `html_handling`, whose default already
+# does the right thing for an Astro directory build -- verified against the
+# local Workers runtime: `/software/` serves its index.html, and `/software`
+# 307s to the trailing-slash form rather than 404ing.
+#
+# `not_found_handling` is deliberately left at its default. Setting it to
+# "404-page" would point at a /404.html this site does not build, and
+# "single-page-application" would serve the homepage for every dead URL --
+# turning genuine 404s into soft-200s that search engines index as duplicates
+# of the front page.

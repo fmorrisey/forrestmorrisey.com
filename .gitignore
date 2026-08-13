@@ -30,3 +30,5 @@ agents/
 # Content
 scrapped-site/
 doc/
+# Local wrangler dev state (caches, generated types)
+.wrangler/
