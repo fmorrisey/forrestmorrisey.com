@@ -53,18 +53,25 @@
 # something specific.
 /search                               /tags/                         301
 
+# Squarespace served uploaded files from /s/. The resume is the one legacy link
+# most likely already pasted into job applications, LinkedIn and email
+# signatures, where it cannot be edited after the fact -- so it has to survive
+# cutover even though it is not a page.
+/s/fMorrisey_DeveloperResume.pdf       /assets/Forrest-Morrisey-Resume.pdf   301
+
 # The Portfolio section became Software. The bare /portfolio has no trailing
 # segment for the splat, so it needs its own line above the wildcard --
 # the same trap that the Caddy version hit with `(.+)` vs `(.*)`.
 /portfolio                             /software/                     301
 /portfolio/*                           /software/:splat               301
 
-# Blog posts, both slash forms. The legacy slug encodes the publish date:
+# Blog posts, both slash forms. Squarespace only ever published two posts (see
+# scrapped-site/meta/pages.txt), and the legacy slug encodes the publish date.
 # /blog/2020/9/2/printhello-world is the 2020-09-11 devCodeCamp announcement,
-# which migrated to writing/hello-world.md -- NOT writing/print-hello-world.md,
-# a different post dated 2019-09-11 that happens to share the title. Confirmed
-# against the live Squarespace item (publishOn 2020-09-11, body matches
-# hello-world.md) before changing the target.
+# which migrated to writing/hello-world.md. Confirmed against the live
+# Squarespace item -- publishOn 2020-09-11, body a word-for-word match -- before
+# changing the target. writing/print-hello-world.md is unmigrated placeholder
+# content that happened to share the title; it is now unpublished.
 /blog/2020/5/15/the-journey-begins     /writing/the-journey-begins/   301
 /blog/2020/5/15/the-journey-begins/    /writing/the-journey-begins/   301
 /blog/2020/9/2/printhello-world        /writing/hello-world/          301
