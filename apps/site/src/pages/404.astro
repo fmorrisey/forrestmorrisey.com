@@ -1,0 +1,65 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import HeroBanner from "../components/HeroBanner.astro";
+
+// Astro emits this as dist/404.html. Cloudflare only serves it because
+// wrangler.toml sets `not_found_handling = "404-page"` -- without that, a dead
+// URL gets a bare runtime 404 and this page is never reached.
+//
+// Worth having specifically now: the site is about to inherit forrestmorrisey.com
+// along with years of Squarespace inbound links. `_redirects` covers every legacy
+// URL found in the scrape, but a scrape only sees pages that were still linked.
+// Anything retired earlier, or shared once in a DM in 2021, lands here.
+---
+
+<BaseLayout title="Not Found — Forrest Morrisey" fullWidth={true}>
+  <HeroBanner title="404" subtitle="This page moved, or never existed" height="medium" />
+
+  <section class="section">
+    <div class="container">
+      <div class="not-found">
+        <p>
+          The site was rebuilt in 2026 and most old links were mapped to their
+          new homes. This one slipped through — which is useful to know, so if
+          you followed a link from somewhere, I would like to hear about it.
+        </p>
+
+        <p class="muted">A few places worth trying instead:</p>
+
+        <div class="cta-row">
+          <a href="/software" class="btn btn-outline btn-pill">Software</a>
+          <a href="/writing" class="btn btn-outline btn-pill">Writing</a>
+          <a href="/adventures" class="btn btn-outline btn-pill">Adventures</a>
+          <a href="/photography" class="btn btn-outline btn-pill">Photography</a>
+        </div>
+
+        <p class="tags-hint">
+          Or <a href="/tags">browse everything by tag</a> — that is the closest
+          thing here to a search box.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found {
+    max-width: 40rem;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    justify-content: center;
+    margin: var(--space-md) 0;
+  }
+
+  .tags-hint {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin-top: var(--space-md);
+  }
+</style>

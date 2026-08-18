@@ -28,6 +28,33 @@ live in a dashboard where nobody will find them later:
 The root directory matters: this is a monorepo and there is no `package.json` at
 the top level, so a build from the default root fails immediately.
 
+## Domain and canonical host
+
+**The apex is canonical.** `forrestmorrisey.com` serves the site;
+`www.forrestmorrisey.com` 301s to it.
+
+This is not arbitrary and should not be flipped casually. `site` in
+`apps/site/astro.config.mjs` has described the apex since long before the domain
+served this site, so every canonical tag, every `<loc>` in the sitemap, and the
+`Sitemap:` line in `robots.txt` already name it. Changing the canonical host
+means rebuilding all of that, and asking search engines to re-consolidate a
+second time.
+
+Squarespace published `www` for years, so inbound links and existing search
+results point there. The `www` -> apex redirect is what carries them over, and
+it has to keep working indefinitely -- it is not a transitional step.
+
+| Setting | Value |
+|---|---|
+| Pages custom domain | `forrestmorrisey.com` |
+| Pages custom domain | `www.forrestmorrisey.com` |
+| Redirect Rule | hostname `www.forrestmorrisey.com` -> `https://forrestmorrisey.com` + path, 301 |
+| SSL/TLS mode | Full (strict) |
+
+The redirect is a zone-level Redirect Rule rather than a line in `_redirects`,
+because Pages redirect rules match on path only -- they cannot see the hostname,
+so they cannot express "www to apex".
+
 ## What controls behaviour, and where
 
 Routing and caching are **not** configured here any more. They are files in the

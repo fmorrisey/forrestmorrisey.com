@@ -3,10 +3,15 @@ title: print("Hello World")
 description: First post - The beginning of a new chapter
 date: 2019-09-11
 tags: [introduction, coding, transition]
-published: true
+published: false
 heroImage: /assets/images/writing/hello-world/hero.jpg
 coverImage: /assets/images/writing/hello-world/cover.jpg
 heroSubtitle: September 2019
+# Unpublished: this is seeded placeholder content, not a migrated post.
+# Squarespace only ever published two blog entries (scrapped-site/meta/pages.txt),
+# and the real one with this title is hello-world.md (2020-09-11). Leaving both
+# published put two identical titles on /writing/ and in the sitemap. Kept rather
+# than deleted so the prose is recoverable if it is wanted later.
 summary: The traditional first post. A simple greeting that marks the beginning of something new.
 featured: false
 ctaLabel: Read
