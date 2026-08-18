@@ -1,34 +1,51 @@
 # Cloudflare Pages redirect rules. Ported from infra/caddy/Caddyfile when the
 # site moved off the Rainier origin -- see infra/README.md.
 #
-# ORDER MATTERS: first match wins, exactly as the Caddy `route` block worked.
-# The two specific /blog/<date>/<slug> posts must stay above the /blog/*
-# catch-all, or every post lands on the writing index instead of itself.
+# ORDER MATTERS: first match wins. The specific /blog rules must stay above the
+# /blog/* catch-all, or every post lands on the writing index instead of itself.
 #
-# 301 rather than 302 throughout: these moves are final, and search engines
-# should transfer ranking to the new URLs.
+# TRAILING SLASHES: matching is exact, so each legacy path needs both forms.
+# Without the second line `/services` redirected while `/services/` 404d -- and
+# Astro's directory build format makes the trailing slash canonical on the new
+# site, so a visitor who "fixed" the 404 by adding a slash got another one.
+#
+# 301 rather than 302 throughout except the final catch-all: these moves are
+# final, and search engines should transfer ranking to the new URLs.
 
 # Legacy Squarespace URLs -> new routes.
-/home                                 /                              301
-/services                             /contact/                      301
-/social-feeds                         /social/                       301
-/projects                             /software/                     301
-/explore                              /adventures/                   301
-/iat-2020                             /adventures/iat-2020/          301
+/home                                  /                              301
+/home/                                 /                              301
+/services                              /contact/                      301
+/services/                             /contact/                      301
+/social-feeds                          /social/                       301
+/social-feeds/                         /social/                       301
+/projects                              /software/                     301
+/projects/                             /software/                     301
+/explore                               /adventures/                   301
+/explore/                              /adventures/                   301
+/iat-2020                              /adventures/iat-2020/          301
+/iat-2020/                             /adventures/iat-2020/          301
 
 # /browse and /photos were two Squarespace entry points to the same gallery
 # landing; they collapse into one route here.
-/browse                               /photography/                  301
-/photos                               /photography/                  301
-/portraits                            /photography/portraits/        301
-/climatestrike                        /photography/climate-strike/   301
-/latest                               /photography/highlights/       301
+/browse                                /photography/                  301
+/browse/                               /photography/                  301
+/photos                                /photography/                  301
+/photos/                               /photography/                  301
+/portraits                             /photography/portraits/        301
+/portraits/                            /photography/portraits/        301
+/climatestrike                         /photography/climate-strike/   301
+/climatestrike/                        /photography/climate-strike/   301
+/latest                                /photography/highlights/       301
+/latest/                               /photography/highlights/       301
 
 # Retired Squarespace pages: "UX / UI (Copy)" was a duplicate, and "New Gallery"
 # was an empty orphan. Fold them into the nearest parent rather than 404 -- a
 # live link should still land somewhere useful.
-/ux-ui-1                              /software/                     301
-/new-gallery-1                        /photography/                  301
+/ux-ui-1                               /software/                     301
+/ux-ui-1/                              /software/                     301
+/new-gallery-1                         /photography/                  301
+/new-gallery-1/                        /photography/                  301
 
 # Squarespace had a site search; this site has none. /tags is the nearest
 # equivalent -- one page listing every subject across all collections -- and is
@@ -39,15 +56,39 @@
 # The Portfolio section became Software. The bare /portfolio has no trailing
 # segment for the splat, so it needs its own line above the wildcard --
 # the same trap that the Caddy version hit with `(.+)` vs `(.*)`.
-/portfolio                            /software/                     301
-/portfolio/*                          /software/:splat               301
+/portfolio                             /software/                     301
+/portfolio/*                           /software/:splat               301
 
-# Blog posts first, then the index, then everything else under /blog.
-/blog/2020/5/15/the-journey-begins    /writing/the-journey-begins/   301
-/blog/2020/9/2/printhello-world       /writing/print-hello-world/    301
-/blog                                 /writing/                      301
+# Blog posts, both slash forms. The legacy slug encodes the publish date:
+# /blog/2020/9/2/printhello-world is the 2020-09-11 devCodeCamp announcement,
+# which migrated to writing/hello-world.md -- NOT writing/print-hello-world.md,
+# a different post dated 2019-09-11 that happens to share the title. Confirmed
+# against the live Squarespace item (publishOn 2020-09-11, body matches
+# hello-world.md) before changing the target.
+/blog/2020/5/15/the-journey-begins     /writing/the-journey-begins/   301
+/blog/2020/5/15/the-journey-begins/    /writing/the-journey-begins/   301
+/blog/2020/9/2/printhello-world        /writing/hello-world/          301
+/blog/2020/9/2/printhello-world/       /writing/hello-world/          301
 
-# Catch-all for /blog/tag/* and /blog/category/*. Temporary: it sends taxonomy
-# URLs to the writing index. Point these at the real tag pages -- #17 has landed,
-# so /tags/<tag>/ now exists and this could be made precise.
-/blog/*                               /writing/                      301
+# Squarespace taxonomy. These now have real destinations -- #17 shipped
+# /tags/<tag>/ -- so they no longer need to dump into the writing index.
+/blog/tag/Career                       /tags/career/                  301
+/blog/tag/Career/                      /tags/career/                  301
+/blog/tag/Journey                      /tags/journey/                 301
+/blog/tag/Journey/                     /tags/journey/                 301
+/blog/tag/Path                         /tags/path/                    301
+/blog/tag/Path/                        /tags/path/                    301
+/blog/tag/Personal                     /tags/personal/                301
+/blog/tag/Personal/                    /tags/personal/                301
+/blog/category/Transition              /tags/transition/              301
+/blog/category/Transition/             /tags/transition/              301
+
+/blog                                  /writing/                      301
+/blog/                                 /writing/                      301
+
+# Catch-all for any other /blog/* URL. Deliberately 302: the taxonomy URLs above
+# are the only ones known to have existed, so anything reaching here is
+# unrecognised and the writing index is a guess, not a destination. A 301 would
+# be cached indefinitely by browsers and would consolidate the URL into
+# /writing/ in search engines -- both irreversible.
+/blog/*                                /writing/                      302
